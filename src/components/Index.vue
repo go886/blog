@@ -11,7 +11,7 @@ export default {
     this.$http
       .get("/posts")
       .then(res => {
-        res;
+        this.$message({ message: JSON.stringify(res.data) });
       })
       .catch(err => {
         this.$message({

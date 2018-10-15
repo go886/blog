@@ -9,17 +9,20 @@ export default {
   props: {
     msg: String
   },
-  methods: {
-    created() {
+   created() {
       this.$http
         .get("/posts")
-        .then(res => {})
+        .then(res => {
+          this.$message({message:JSON.stringify(res)})
+        })
         .catch(err => {
           this.$message({
             message: err
           });
         });
-    }
+    },
+  methods: {
+   
   }
 };
 </script>
