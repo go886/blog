@@ -1,6 +1,6 @@
 <template>
   <div class="root">
-  
+      footer
   </div>
 </template>
 
@@ -8,20 +8,8 @@
 export default {
   props: {
     msg: String
-  },
-  methods: {
-    created() {
-      this.$http
-        .get("/posts")
-        .then(res => {})
-        .catch(err => {
-          this.$message({
-            message: err
-          });
-        });
-    }
   }
-};
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

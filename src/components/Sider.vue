@@ -5,8 +5,13 @@
 </template>
 
 <script>
+/**
+ * 分类
+ * 热门
+ * 最近更新
+ * 搜索
+ */
 export default {
-  name: 'header',
   props: {
     msg: String
   }

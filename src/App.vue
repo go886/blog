@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <el-col :span="24" class="header">
-      <Header />
+      <Header/>
     </el-col>
     <el-col :span="24" class="main">
        <section class="content">
@@ -14,27 +14,29 @@
         </div>
       </section>
 
-      <aside class="menu-expanded">
+      <aside class="side">
         <Sider />
       </aside>
+    </el-col>
+    <el-col :span="24" class="footer">
+      <Footer />
     </el-col>
   </div>
 </template>
 
 <script>
-import Header from '@/components/Header'
-import Sider from '@/components/Sider'
-import Contents from '@/components/Contents'
-
+import Header from "@/components/Header";
+import Sider from "@/components/Sider";
+import Footer from "@/components/Footer";
 
 export default {
-  name: 'app',
+  name: "app",
   components: {
     Header,
     Sider,
-    Contents,
+    Footer
   }
-}
+};
 </script>
 
 <style>
@@ -47,12 +49,19 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  /* margin-top: 60px; */
+
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 .header {
   height: 60px;
@@ -60,10 +69,25 @@ body {
   background: #20a0ff;
 }
 .main {
+  /* display: flex;
+  position: absolute; */
+  /* top: 60px;
+  bottom: 0px; */
+  flex: 1;
   display: flex;
-  position: absolute;
-  top: 60px;
-  bottom: 0px;
   /* background: yellowgreen; */
+}
+.footer {
+  height: 45px;
+  line-height: 45px;
+  background: gray;
+}
+.content {
+  /* background-color: blue; */
+  flex: 1;
+}
+.side {
+  /* background-color: red; */
+  width: 300px;
 }
 </style>
