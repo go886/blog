@@ -7,7 +7,7 @@ import Index from '@/components/Index'
 import About from '@/components/About'
 
 const router = new VueRouter({
-    mode: 'history',
+    // mode: 'history',
     base: __dirname,
     routes: [
         {

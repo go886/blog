@@ -1,26 +1,17 @@
 <template>
   <div id="app">
-    <el-col :span="24" class="header">
-      <Header/>
-    </el-col>
-    <el-col :span="24" class="main">
-       <section class="content">
-        <div class="grid-content bg-purple-light">
-          <el-col :span="24" class="content-wrapper">
-            <transition name="fade" mode="out-in">
+      <Header class='header'/>
+      <div class="content">
+        <div class='contentleft'>
+           <transition name="fade" mode="out-in">
             <router-view></router-view>
             </transition>
-          </el-col>
         </div>
-      </section>
-
-      <aside class="side">
-        <Sider />
-      </aside>
-    </el-col>
-    <el-col :span="24" class="footer">
-      <Footer />
-    </el-col>
+        <div class="side">
+          <Sider />
+        </div>
+      </div>
+      <Footer class='footer'/>
   </div>
 </template>
 
@@ -40,7 +31,14 @@ export default {
 </script>
 
 <style>
+html {
+  height: 100%;
+}
 body {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+
   margin: 0px;
   padding: 0px;
   font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB,
@@ -49,17 +47,8 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
-
-  position: absolute;
-  top: 0px;
-  bottom: 0px;
-  height: 100%;
-  width: 100%;
+  flex: 1;
   display: flex;
   flex-direction: column;
 }
@@ -68,7 +57,7 @@ body {
   line-height: 60px;
   background: #20a0ff;
 }
-.main {
+.content {
   /* display: flex;
   position: absolute; */
   /* top: 60px;
@@ -82,9 +71,10 @@ body {
   line-height: 45px;
   background: gray;
 }
-.content {
+.contentleft {
   /* background-color: blue; */
   flex: 1;
+  padding: 20px;
 }
 .side {
   /* background-color: red; */

@@ -4,14 +4,18 @@
   "private": true,
   "scripts": {
     "dev": "vue-cli-service serve",
-    "serve": "vue-cli-service serve",
+    "server": "node ./server/main.js",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "axios": "^0.18.0",
     "element-ui": "^2.4.8",
+    "hashids": "^1.2.2",
     "koa": "^2.5.3",
+    "koa-router": "^7.4.0",
+    "koa-static": "^5.0.0",
+    "level": "^4.0.0",
     "vue": "^2.5.17",
     "vue-router": "^3.0.1"
   },

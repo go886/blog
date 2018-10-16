@@ -1,7 +1,9 @@
 <template>
   <div class="root">
     <div class='item' v-for="item in paths" :key='item.path'>
-      <a :href="item.path" >{{item.name}}</a>
+      <router-link :to="item.path">{{item.name}}</router-link>
+
+      <!-- <a :href="item.path" ></a> -->
     </div>
   </div>
 </template>
