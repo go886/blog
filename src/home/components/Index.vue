@@ -20,14 +20,15 @@ export default {
   },
   created() {
     this.$http
-      .get("/api/posts")
+      .get("/api/post/query")
       .then(res => {
         this.list = res.data.list;
         this.next = res.data.next;
       })
-      .catch(err => {
+      .catch(res => {
+
         this.$message({
-          message: err,
+          message: res,
           type: "warning"
         });
       });

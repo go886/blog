@@ -16,7 +16,7 @@ module.exports = {
         read_num: 0,//阅读数
     },
     category:{
-        id:'net',
-        name:'互联网',
+        name:'net',
+        title:'互联网',
     }
 }

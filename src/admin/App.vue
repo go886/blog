@@ -1,31 +1,31 @@
 <template>
   <div id="app">
-      <Header class='header'/>
+      <!-- <Header class='header'/> -->
       <div class="content">
         <div class='contentleft'>
            <transition name="fade" mode="out-in">
             <router-view></router-view>
             </transition>
         </div>
-        <div class="side">
+        <!-- <div class="side">
           <Sider />
-        </div>
+        </div> -->
       </div>
-      <Footer class='footer'/>
+      <!-- <Footer class='footer'/> -->
   </div>
 </template>
 
 <script>
-import Header from "@/components/Header";
-import Sider from "@/components/Sider";
-import Footer from "@/components/Footer";
+// import Header from "@/components/Header";
+// import Sider from "@/components/Sider";
+// import Footer from "@/components/Footer";
 
 export default {
   name: "app",
   components: {
-    Header,
-    Sider,
-    Footer
+    // Header,
+    // Sider,
+    // Footer
   }
 };
 </script>
@@ -75,6 +75,7 @@ body {
   /* background-color: blue; */
   flex: 1;
   padding: 20px;
+  display: flex;
 }
 .side {
   /* background-color: red; */
