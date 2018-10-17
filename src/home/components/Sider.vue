@@ -1,6 +1,17 @@
 <template>
   <div class="root">
-  
+    <div>
+        <a href="http://localhost:3000/api/mgr/post/view" target="_blank">view</a>
+      </div>
+      <div>
+        <a href="http://localhost:3000/api/mgr/post/add" target="_blank">post_add</a>
+      </div>
+         <div>
+        <a href="/login.html" target="_blank">login</a>
+      </div>
+      <div>
+        <a href="/admin.html" target="_blank">admin</a>
+      </div>
   </div>
 </template>
 

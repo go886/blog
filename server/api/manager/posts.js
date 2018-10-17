@@ -5,6 +5,7 @@ var lastId = 0;
 module.exports = {
     async add(ctx) {
         var post = JSON.parse(JSON.stringify(ex.post))
+        post.category_id = (await category.find('name', 'net')).id
         post.lastId = lastId++
 
         const id = await mgr.add(post)
@@ -28,6 +29,7 @@ module.exports = {
         const item = await mgr.get(ctx.query.id)
         var cate = await category.get(item.category_id)
         item.category_name = cate.name
+        item.category_title = cate.title
         return item
     },
     async query(ctx) {
@@ -36,6 +38,7 @@ module.exports = {
             var item = list.list[i]
             var cate = await category.get(item.category_id)
             item.category_name = cate.name
+            item.category_title = cate.title
         }
         return list
     },

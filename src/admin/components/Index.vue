@@ -1,6 +1,14 @@
 <template>
   <div class="root">
-      helper...
+      <div>
+        <a href="http://localhost:3000/api/mgr/post/view" target="_blank">view</a>
+      </div>
+      <div>
+        <a href="http://localhost:3000/api/mgr/post/add" target="_blank">post_add</a>
+      </div>
+         <div>
+        <a href="/login.html" target="_blank">login</a>
+      </div>
   </div>
 </template>
 
@@ -12,8 +20,12 @@ export default {
   created() {
     this.$http
       .get("/api/mgr/cate/query")
-      .then(res => {})
-      .catch(err => {});
+      .then(res => {
+        res;
+      })
+      .catch(err => {
+        err;
+      });
   }
 };
 </script>
