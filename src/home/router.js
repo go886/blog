@@ -18,6 +18,11 @@ const router = new VueRouter({
             path: '/about',
             name: '关于',
             component: About,
+        },
+        {
+            path: "/cate/:id",
+            name: "类别",
+            component: Index
         }
         // , {
         //     path: '*',

@@ -1,14 +1,16 @@
 <template>
   <div class="root">
-   <div class='post' v-for="post in list" :key="post.id" @click="onpost(post)">
+   <div class='post' v-for="post in list" :key="post.id">
      <img class='cover' :src="post.cover"/>
      <div class='right'>
       <div class='title'>{{post.title}}</div>
-      <div class='content'>
+      <div class='content' @click="onpost(post)">
         <div class='desc'>{{post.content}}</div>
       </div>
       <div class='tool'>
-        <div>{{time}}</div>
+        <i class="el-icon-date icon"></i><div class='tool-text'>{{gmtDateFormatter(post.edit_time)}}</div>
+        <i class="el-icon-document icon"></i>
+              <router-link :to="'/cate/' + post.category_name" class='tool-text'>{{post.category_title}}</router-link>
       </div>
      </div>
    </div>
@@ -25,8 +27,11 @@ export default {
     };
   },
   created() {
+    alert(location.href)
+
+    
     this.$http
-      .get("/api/post/query")
+      .get("/api/post/query", {params:this.$route.params, cate: this.$route.path.indexOf('/cate') == 0})
       .then(res => {
         this.list = res.data.list;
         this.next = res.data.next;
@@ -44,6 +49,15 @@ export default {
     }
   },
   methods: {
+    gmtDateFormatter(time){
+      return moment(time).format("YYYY/MM/DD");
+    },
+    oncategory(ev, post){
+              ev.cancelBubble=true
+
+      this.$router.push('/cate/' + post.category_id)
+      alert('a')
+    },
     onpost(post) {
       post;
       // this.$router.push('/about')
@@ -89,5 +103,16 @@ export default {
 .tool {
   height: 32px;
   background-color: antiquewhite;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 8px;
+}
+.icon {
+  margin-right: 5px;
+}
+.tool-text {
+  font-size:8;
+  margin-right: 10px;
 }
 </style>

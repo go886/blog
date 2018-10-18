@@ -1,7 +1,5 @@
 const mgr = require('../../model/index').category
 const ex = require('./example')
-
-mgr.add({name:'net', title:'网络'})
 module.exports = {
     async add(ctx) {
         const item = await mgr.find('name', ctx.query.name)
@@ -29,6 +27,6 @@ module.exports = {
         return await mgr.get(ctx.query.id)
     },
     async query(ctx) {
-        return await mgr.query(ctx.query.next)
+        return await mgr.query({des:true})
     },
 }

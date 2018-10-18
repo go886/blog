@@ -1,31 +1,36 @@
 <template>
   <div id="app">
-      <!-- <Header class='header'/> -->
+      <Header class='header'/>
       <div class="content">
-        <div class='contentleft'>
+         <div class="side">
+          <Sider />
+        </div>
+        <div class='container'>
+          <el-breadcrumb separator="/" >
+            <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+            <el-breadcrumb-item>{{$route.name}}</el-breadcrumb-item>
+          </el-breadcrumb>
            <transition name="fade" mode="out-in">
             <router-view></router-view>
             </transition>
         </div>
-        <!-- <div class="side">
-          <Sider />
-        </div> -->
+       
       </div>
-      <!-- <Footer class='footer'/> -->
+      <Footer class='footer'/>
   </div>
 </template>
 
 <script>
-// import Header from "@/components/Header";
-// import Sider from "@/components/Sider";
-// import Footer from "@/components/Footer";
+import Header from "./components/Header";
+import Sider from "./components/Sider";
+import Footer from "./components/Footer";
 
 export default {
   name: "app",
   components: {
-    // Header,
-    // Sider,
-    // Footer
+    Header,
+    Sider,
+    Footer
   }
 };
 </script>
@@ -71,14 +76,15 @@ body {
   line-height: 45px;
   background: gray;
 }
-.contentleft {
+.container {
   /* background-color: blue; */
   flex: 1;
   padding: 20px;
   display: flex;
+  flex-direction: column;
 }
 .side {
   /* background-color: red; */
-  width: 300px;
+  width: 220px;
 }
 </style>
