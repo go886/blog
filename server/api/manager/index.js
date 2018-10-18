@@ -8,5 +8,5 @@ module.exports = {
 }
 
 mgr.category.add({name:'net', title:'网络'})
-mgr.category.add({name:'block', title:'区块链'})
+// mgr.category.add({name:'block', title:'区块链'})
 

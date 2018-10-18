@@ -117,10 +117,10 @@ model.prototype = {
 }
 
 module.exports = {
+    idx: new model(''), //indexs
     post: new model('p', true), //post
     category: new model('c'),
     user: new model('u'),
     link: new model('l'),
     tag: new model('t'),
-    categoryPosts: new model('cp')
 }

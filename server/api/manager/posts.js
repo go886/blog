@@ -1,15 +1,18 @@
-const mgr = require('../../model/index').post
-const category = require('../../model/index').category
+const db = require('../../model/index')
+const mgr = db.post
+const category = db.category
+const idx = db.idx
 const ex = require('./example')
 var lastId = 0;
 module.exports = {
     async add(ctx) {
         var post = JSON.parse(JSON.stringify(ex.post))
-        post.category_id = (await category.find('name', 'net')).id
+        var cate = await category.find('name', 'net')
+        post.category_id = cate.id
         post.lastId = lastId++
 
         const id = await mgr.add(post)
-        await category.sub(post.category_id).add({ value: id })
+        await idx.sub(cate.name).add({ value: id })
         return { id }
     },
     async remove(ctx) {
