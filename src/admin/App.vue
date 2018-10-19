@@ -50,12 +50,13 @@ body {
     Microsoft YaHei, SimSun, sans-serif;
   font-size: 14px;
   -webkit-font-smoothing: antialiased;
+  background-color:#f5f5d5;
 }
 #app {
-  color: #2c3e50;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  width: 100%;
 }
 .header {
   height: 60px;
@@ -63,18 +64,20 @@ body {
   background: #20a0ff;
 }
 .content {
-  /* display: flex;
-  position: absolute; */
-  /* top: 60px;
-  bottom: 0px; */
-  flex: 1;
   display: flex;
-  /* background: yellowgreen; */
+  position: absolute;
+  top: 60px;
+  bottom: 45px;
+  width: 100%;
 }
 .footer {
+  display: flex;
+  position: absolute;
+  width: 100%;
   height: 45px;
   line-height: 45px;
   background: gray;
+  bottom: 0px;
 }
 .container {
   /* background-color: blue; */
@@ -82,9 +85,12 @@ body {
   padding: 20px;
   display: flex;
   flex-direction: column;
+
+  overflow-y: scroll;
 }
 .side {
   /* background-color: red; */
-  width: 220px;
+  width: 200px;
+  display: flex;
 }
 </style>

@@ -34,7 +34,10 @@ const r = [
       ['/api/mgr/post/update', manager.posts.update],
       ['/api/mgr/post/get', manager.posts.get],
       ['/api/mgr/post/query', manager.posts.query],
-      ['/api/mgr/post/view', manager.posts.view]
+      ['/api/mgr/post/view', manager.posts.view],
+      ['/api/mgr/post/first', manager.posts.first],
+      ['/api/mgr/post/last', manager.posts.last],
+      ['/api/mgr/post/publish', manager.posts.publish]
     ]
   },
   {

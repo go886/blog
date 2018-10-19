@@ -8,7 +8,6 @@
         style="width: 100%;"
         stripe>
         <el-table-column
-          fixed
           prop="id"
           label="ID"
           width="150">
@@ -17,16 +16,19 @@
           prop="name"
           label="名称"
           width="120">
+          <template slot-scope="scope">
+           <el-button
+            @click.native.prevent="ongotocate(scope.row)"
+            type="text"
+            size="small">
+            {{scope.row.name}}
+          </el-button>
+          </template>
         </el-table-column>
         <el-table-column
           prop="title"
           label="标题"
           >
-            <template slot-scope="scope">
-            <el-tag
-              type="primary"
-              disable-transitions>{{scope.row.title}}</el-tag>
-          </template>
         </el-table-column>
         <el-table-column
           prop="add_time"
@@ -143,27 +145,38 @@ export default {
         });
     },
     onremove(cate) {
-      this.$http
-        .get("/api/mgr/cate/remove", {
-          params: cate
-        })
-        .then(res => {
-          if (res.data.error) {
-            this.$message({
-              message: res.data.error,
-              type: "warning"
+      this.$confirm("此操作将永久删除 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.$http
+            .get("/api/mgr/cate/remove", {
+              params: cate
+            })
+            .then(res => {
+              if (res.data.error) {
+                this.$message({
+                  message: res.data.error,
+                  type: "warning"
+                });
+              } else {
+                this.$message("删除成功");
+                this.cates.splice(this.cates.indexOf(cate), 1);
+              }
+            })
+            .catch(err => {
+              this.$message({
+                message: err,
+                type: "warning"
+              });
             });
-          } else {
-            this.$message("删除成功");
-            this.cates.splice(this.cates.indexOf(cate), 1)
-          }
         })
-        .catch(err => {
-          this.$message({
-            message: err,
-            type: "warning"
-          });
-        });
+        .catch();
+    },
+    ongotocate(cate) {
+      window.open("/cate/" + cate.name);
     }
   }
 };

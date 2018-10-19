@@ -7,6 +7,6 @@ module.exports = {
     posts: require('./posts')
 }
 
-mgr.category.add({name:'net', title:'网络'})
-// mgr.category.add({name:'block', title:'区块链'})
+var item = mgr.category.add({name:'net', title:'网络'})
+var item2 = mgr.category.add({name:'block', title:'区块链'})
 

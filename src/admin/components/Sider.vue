@@ -1,6 +1,6 @@
 <template>
   <div class="root">
-    <el-menu default-active="/"  class="el-menu-vertical-demo" @select="handleSelect" :collapse="isCollapse">
+    <el-menu :default-active="$route.path"  class="el-menu-vertical-demo" @select="handleSelect" :collapse="isCollapse">
         <el-submenu index="1" >
             <template slot="title">
             <i class="el-icon-menu"></i>
@@ -74,6 +74,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.root {
+  display: flex;
+}
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 200px;
   min-height: 400px;

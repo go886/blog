@@ -27,9 +27,6 @@ export default {
     };
   },
   created() {
-    alert(location.href)
-
-    
     this.$http
       .get("/api/post/query", {params:this.$route.params, cate: this.$route.path.indexOf('/cate') == 0})
       .then(res => {
