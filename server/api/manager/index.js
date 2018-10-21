@@ -4,7 +4,8 @@ const ex = require('./example')
 module.exports = {
     user: require('./user'),
     cate: require('./category'),
-    posts: require('./posts')
+    article: require('./article'),
+    link: require('./links'),
 }
 
 var item = mgr.category.add({name:'net', title:'网络'})

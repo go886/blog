@@ -39,21 +39,14 @@ export default {
   },
   methods: {
     onlogin() {
-      this.$http
-        .get("/api/login", {
-          params: { name: this.name, pwd: md5(this.pwd) }
-        })
-        .then(res => {
-          if (!res.data.error) {
-            this.$message({ message: JSON.stringify(res.data) });
-            // this.$router.push("/");
-          } else {
-            this.$message.error(res.data.error);
-          }
-        })
-        .catch(err => {
-          this.$message.error(err);
-        });
+      this.$http("/api/login", {
+        params: { name: this.name, pwd: md5(this.pwd) }
+      }).then(res => {
+        if (!res.error) {
+          this.$message({ message: JSON.stringify(res.data) });
+          // this.$router.push("/");
+        }
+      });
     }
   }
 };

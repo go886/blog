@@ -5,7 +5,7 @@ Vue.use(VueRouter)
 
 import Index from './components/Index'
 import Category from './components/Category'
-import Post from './components/Post'
+import Article from './components/Article'
 import Tag from './components/Tag'
 import Link from './components/Link'
 import Setting from './components/Setting'
@@ -22,14 +22,19 @@ const router = new VueRouter({
             component: Index
         },
         {
+            name: "公告",
+            path: "/notice",
+            component: null,
+        },
+        {
             path: '/cate',
             name: '分类',
             component: Category,
         },
         {
-            path: '/post',
+            path: '/article/:page?',
             name: '文章',
-            component: Post,
+            component: Article,
         },
         {
             path: '/tag',
@@ -42,8 +47,13 @@ const router = new VueRouter({
             component: Link,
         },
         {
+            name: "评论",
+            path: "/comment",
+            component: null,
+        },
+        {
             path: '/setting',
-            name: '全局设置',
+            name: '网站配置',
             component: Setting,
         },
         {

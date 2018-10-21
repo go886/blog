@@ -3,9 +3,10 @@
     <div class='toolbar'>
       <el-button type="primary" @click="onadd" style="margin-left:10px;margin-right:10px;">添加<i class="el-icon-edit el-icon--right"></i></el-button>
     </div>
-    <el-table
+    <div class='content'>
+      <el-table
         :data="cates"
-        style="width: 100%;"
+        style="width: 100%;overflow-y: scroll;"
         stripe>
         <el-table-column
           prop="id"
@@ -17,7 +18,7 @@
           label="名称"
           width="120">
           <template slot-scope="scope">
-           <el-button
+            <el-button
             @click.native.prevent="ongotocate(scope.row)"
             type="text"
             size="small">
@@ -57,6 +58,7 @@
           </template>
         </el-table-column>
       </el-table>
+    </div>
   <el-dialog
     :title="edit ? '修改' : '新增'"
     :visible.sync="dialogVisible"
@@ -98,17 +100,10 @@ export default {
       return moment(cellValue).format("YYYY/MM/DD HH:mm");
     },
     load() {
-      this.$http
-        .get("/api/mgr/cate/query")
+      this.$http("/api/mgr/cate/query")
         .then(res => {
-          this.cates = res.data.list;
+          if (!res.error) this.cates = res;
         })
-        .catch(err => {
-          this.$message({
-            message: err,
-            type: "warning"
-          });
-        });
     },
     onadd() {
       this.cate = {};
@@ -121,28 +116,19 @@ export default {
       this.dialogVisible = true;
     },
     oncommitedit() {
-      this.$http
-        .get(this.edit == true ? "/api/mgr/cate/update" : "/api/mgr/cate/add", {
+      this.$http(
+        this.edit == true ? "/api/mgr/cate/update" : "/api/mgr/cate/add",
+        {
           params: this.cate
-        })
+        }
+      )
         .then(res => {
-          if (res.data.error) {
-            this.$message({
-              message: res.data.error,
-              type: "warning"
-            });
-          } else {
+          if (!res.error) {
             this.$message(this.edit ? "修改成功" : "创建成功");
             this.dialogVisible = false;
             this.load();
           }
         })
-        .catch(err => {
-          this.$message({
-            message: err,
-            type: "warning"
-          });
-        });
     },
     onremove(cate) {
       this.$confirm("此操作将永久删除 是否继续?", "提示", {
@@ -151,29 +137,16 @@ export default {
         type: "warning"
       })
         .then(() => {
-          this.$http
-            .get("/api/mgr/cate/remove", {
-              params: cate
-            })
+          this.$http("/api/mgr/cate/remove", {
+            params: cate
+          })
             .then(res => {
-              if (res.data.error) {
-                this.$message({
-                  message: res.data.error,
-                  type: "warning"
-                });
-              } else {
+              if (!res.error) {
                 this.$message("删除成功");
                 this.cates.splice(this.cates.indexOf(cate), 1);
               }
             })
-            .catch(err => {
-              this.$message({
-                message: err,
-                type: "warning"
-              });
-            });
         })
-        .catch();
     },
     ongotocate(cate) {
       window.open("/cate/" + cate.name);
@@ -185,8 +158,9 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .root {
-  /* display: flex;
-  flex: 1; */
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 .toolbar {
   flex: 1;
@@ -194,12 +168,21 @@ export default {
   align-items: center;
   flex-direction: row;
   height: 50px;
-  background: #f2f2f2;
-  margin-top: 10px;
+  max-height: 50px;
+  min-height: 50px;
   margin-bottom: 10px;
-  padding-right: 20px;
+  background: #f2f2f2;
 }
 .inputpannel {
   margin-bottom: 20px;
+}
+.content {
+  position: relative;
+  display: flex;
+  top: 0px;
+  bottom: 0px;
+  left: 0;
+  right: 0;
+  overflow-y: scroll;
 }
 </style>

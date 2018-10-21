@@ -3,28 +3,20 @@
     <div class='toolbar'>
       <el-button type="primary" @click="onadd" style="margin-left:10px;margin-right:10px;">添加<i class="el-icon-edit el-icon--right"></i></el-button>
     </div>
-    <el-table
+    <div class='content'>
+      <el-table
         :data="list"
-        style="width: 100%"
+        style="width: 100%;overflow-y: auto;"
         stripe
         >
         <el-table-column type="expand">
           <template scope="props">
-            <PostPannel :info="props.row"/>
+            <ArticlePannel :info="props.row"/>
           </template>
         </el-table-column>
-    <!-- <el-table-column
-      type="index"
-      width="50">
-    </el-table-column> -->
         <el-table-column
           prop="id"
           label="ID"
-          width="100">
-        </el-table-column>
-        <el-table-column
-          prop="_k"
-          label="Key"
           width="150">
         </el-table-column>
         <el-table-column
@@ -85,48 +77,42 @@
                       更多<i class="el-icon-caret-bottom el-icon--right"></i>
                   </el-button>
                   <el-dropdown-menu slot="dropdown">
-                      <el-dropdown-item @click.native="onremove(scope.row)">删除</el-dropdown-item>
-                      <el-dropdown-item @click.native="onpublish(scope.row)" >{{scope.row.status == 0 ? "发布" : "撤回"}}</el-dropdown-item>
+                    <el-dropdown-item @click.native="onpublish(scope.row)" >{{scope.row.status == 0 ? "发布" : "撤回"}}</el-dropdown-item>
+                    <el-dropdown-item @click.native="onremove(scope.row)">删除</el-dropdown-item>
                   </el-dropdown-menu>
               </el-dropdown>
           </template>
         </el-table-column>
       </el-table>
-  <!-- <el-dialog
-    :title="edit ? '修改' : '新增'"
-    :visible.sync="dialogVisible"
-    width="40%">
-    <div class='inputpannel'>
-     <el-input placeholder="请输入名称" v-model="cate.name" :disabled='edit'>
-      <template slot="prepend">名称:</template>
-    </el-input>
     </div>
-     <div class='inputpannel'>
-    <el-input placeholder="请输入标题" v-model="cate.title" >
-      <template slot="prepend">标题:</template>
-    </el-input>
-     </div>
-    <span slot="footer" class="dialog-footer">
-      <el-button @click="dialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="oncommitedit">确 定</el-button>
-    </span>
-  </el-dialog> -->
+  <el-pagination
+    :page-size="pageSize"
+    :current-page.sync="page"  
+    layout="total, prev, pager, next"
+    :total="total"
+    @current-change="onPageChanged"
+    background>
+  </el-pagination>
+
+    <ArticelEditor ref="posteditor"/>
   </div>
 </template>
 
 <script>
 import moment from "moment";
-import PostPannel from "./PostPannel";
+import ArticlePannel from "./ArticlePannel";
+import ArticelEditor from "./ArticleEditor";
 export default {
   components: {
-    PostPannel
+    ArticlePannel,
+    ArticelEditor
   },
   data() {
     return {
       list: [],
-      item: {},
-      edit: false,
-      dialogVisible: false,
+      pageSize: 10,
+      page: 1,
+      total: 0,
       status: [
         {
           value: 0,
@@ -139,7 +125,9 @@ export default {
       ]
     };
   },
-  created() {
+  created() {},
+  mounted() {
+    this.page = parseInt(this.$route.params.page || 1);
     this.load();
   },
   methods: {
@@ -147,19 +135,18 @@ export default {
       return moment(cellValue).format("YYYY/MM/DD HH:mm");
     },
     load() {
-      this.$http
-        .get("/api/mgr/post/query")
-        .then(res => {
-          console.log(res);
-          this.list = res.data.list;
-          this.next = res.data.next;
-        })
-        .catch(err => {
-          this.$message({
-            message: err,
-            type: "warning"
-          });
-        });
+      this.$http("/api/mgr/article/query", {
+        params: {
+          pageSize: this.pageSize,
+          page: this.page
+        }
+      }).then(res => {
+        if (!res.error) {
+          this.list = res.list;
+          this.total = res.total;
+          this.page = res.page;
+        }
+      });
     },
     onpost(post) {
       window.open("/" + post.category_name + "/" + post._k);
@@ -171,43 +158,50 @@ export default {
       return value == row.status;
     },
     onadd() {
-      this.cate = {};
-      this.edit = false;
-      this.dialogVisible = true;
+      this.$refs["posteditor"].show(null, result => {
+        this.load();
+      });
     },
     onedit(post) {
-      window.open("/post/" + post.id);
-      // this.cate = JSON.parse(JSON.stringify(cate));
-      // this.edit = true;
-      // this.dialogVisible = true;
+      this.$refs["posteditor"].show(post, result => {
+        this.load();
+      });
     },
-    onremove(post) {},
+    onremove(post) {
+      this.$confirm("此操作将永久删除 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+        this.$http("/api/mgr/article/remove", {
+          params: {
+            id: post.id
+          }
+        }).then(res => {
+          if (!res.error) {
+            this.$message("成功删除");
+            this.list.splice(this.list.indexOf(post), 1);
+          }
+        });
+      });
+    },
     onpublish(post) {
       const publish = post.status == 0;
-      this.$http
-        .get("/api/mgr/post/publish", {
-          params: {
-            id: post.id,
-            publish
-          }
-        })
-        .then(res => {
-          if (res.data.error) {
-            this.$message({
-              message: res.data.error,
-              type: "warning"
-            });
-          } else {
-            this.$message(publish ? "发布成功" : "已撤回");
-            post.status = publish ? 1 : 0;
-          }
-        })
-        .catch(err => {
-          this.$message({
-            message: err,
-            type: "warning"
-          });
-        });
+      this.$http("/api/mgr/article/publish", {
+        params: {
+          id: post.id,
+          publish
+        }
+      }).then(res => {
+        if (!res.error) {
+          this.$message(publish ? "发布成功" : "已撤回");
+          post.status = publish ? 1 : 0;
+        }
+      });
+    },
+    onPageChanged(page) {
+      this.$router.push({ path: "/article/" + page });
+      this.load();
     }
   }
 };
@@ -216,9 +210,10 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .root {
-  /* display: flex;
-  flex: 1; */
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  /* background-color: bisque; */
 }
 .toolbar {
   flex: 1;
@@ -226,13 +221,27 @@ export default {
   align-items: center;
   flex-direction: row;
   height: 50px;
+  max-height: 50px;
+  min-height: 50px;
   background: #f2f2f2;
-  margin-top: 10px;
   margin-bottom: 10px;
-  padding-right: 20px;
 }
 .inputpannel {
   margin-bottom: 20px;
+}
+.content {
+  position: relative;
+  display: flex;
+  top: 0px;
+  bottom: 0px;
+  left: 0;
+  right: 0;
+  background-color: aqua;
+  overflow-y: scroll;
+}
+.navi {
+  display: flex;
+  flex-direction: row;
 }
 </style>
 <style>

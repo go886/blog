@@ -11,14 +11,14 @@ export default {
   },
   created() {
  
-    this.$http
-      .get("/api/mgr/cate/query")
-      .then(res => {
-        res;
-      })
-      .catch(err => {
-        err;
-      });
+    // this.$http
+    //   .get("/api/mgr/cate/query")
+    //   .then(res => {
+    //     res;
+    //   })
+    //   .catch(err => {
+    //     err;
+    //   });
   }
 };
 </script>

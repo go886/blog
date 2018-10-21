@@ -1,32 +1,33 @@
 const db = require('../../model/index')
-const mgr = db.post
+const mgr = db.article
 const category = db.category
 const idx = db.idx
 const ex = require('./example')
-var lastId = 0;
 module.exports = {
     async add(ctx) {
-        var post = JSON.parse(JSON.stringify(ex.post))
-        var cate = await category.find('name', 'net')
-        post.category_id = cate.id
-        post.category_name = cate.name
-        post.lastId = lastId++
+        var article = JSON.parse(JSON.stringify(ex.article))
+        var cate = await category.find('name', 'net') || {}
+        article.category_id = cate.id
+        article.category_name = cate.name
 
-        const id = await mgr.add(post)
-        await idx.sub(cate.name).add({ id, title: post.title })
+        article.title = ctx.query.title || "test"
+
+        const id = await mgr.add(article)
+        await idx.sub(cate.name).add({ id, title: article.title })
         return { id }
     },
     async remove(ctx) {
-        let post = await mgr.get(ctx.query.id)
-        if (!post) return { error: 'error post id' }
+        let article = await mgr.get(ctx.query.id)
+        if (!article) return { error: 'error post id' }
 
-        await idx.sub(post.category_name).remove(post.id)
-        return { id: post.id }
+        await idx.sub(article.category_name).remove(article.id)
+        await mgr.remove(article.id)
+        return { id: article.id }
     },
     async update(ctx) {
         let item = await mgr.get(ctx.query.id)
         ctx.query && Object.keys(ctx.query).forEach(k => {
-            if (item[k] && k !== 'id' && k !== 'add_time' && k !== 'edit_time') {
+            if (['id', '_k', 'add_time', 'edit_time'].indexOf(k) == -1) {
                 item[k] = ctx.query[k]
             }
         })
@@ -41,8 +42,10 @@ module.exports = {
         return item
     },
     async query(ctx) {
-        const pageSize = (ctx.query.pageSize || 10) + 1
-        const list = await mgr.query({ limit: pageSize, cursor: ctx.query.cursor, des: true })
+        const pageSize = parseInt(ctx.query.pageSize || 10)
+        const page = parseInt(ctx.query.page || 1)
+        const total = await mgr.count()
+        const list = await mgr.query({ limit: pageSize, page, des: true })
         for (var i = 0; i < list.length; ++i) {
             var item = list[i]
             var cate = await category.get(item.category_id)
@@ -51,10 +54,7 @@ module.exports = {
                 item.category_title = cate.title
             }
         }
-        if (list.length >= pageSize) {
-            return { list, cursor: list.pop() }
-        }
-        return { list, }
+        return { list, page, total }
     },
     async view(ctx) {
         return await mgr.view();
@@ -68,11 +68,12 @@ module.exports = {
     async publish(ctx) {
         const id = ctx.query.id
         const status = ctx.query.publish == 'true' ? 1 : 0;
-        const post = await mgr.get(id)
-        if (post && post.status != status) {
-            await mgr.update(post)
-            return {id}
-        } 
-        return {error:'op error'}
+        const article = await mgr.get(id)
+        if (article && article.status != status) {
+            article.status = status
+            await mgr.update(article)
+            return { id }
+        }
+        return { error: 'op error' }
     }
 }

@@ -15,7 +15,7 @@ module.exports = {
         if (!item) return { error: 'no find' }
 
         ctx.query && Object.keys(ctx.query).forEach(k => {
-            if (item[k] && k !== 'id' && k !== 'add_time' && k !== 'edit_time') {
+            if (['id', '_k', 'add_time', 'edit_time'].indexOf(k) == -1) {
                 item[k] = ctx.query[k]
             }
         })
@@ -26,6 +26,6 @@ module.exports = {
         return await mgr.get(ctx.query.id)
     },
     async query(ctx) {
-        return {list:await mgr.query()}
+        return await mgr.query()
     },
 }

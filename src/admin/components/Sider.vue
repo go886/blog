@@ -1,17 +1,17 @@
 <template>
   <div class="root">
-    <el-menu :default-active="$route.path"  class="el-menu-vertical-demo" @select="handleSelect" :collapse="isCollapse">
+    <el-menu :default-active="formatPath($route.path)"  class="el-menu-vertical-demo" @select="handleSelect" :collapse="isCollapse">
         <el-submenu index="1" >
             <template slot="title">
             <i class="el-icon-menu"></i>
             <span slot="title">内容管理</span>
             </template>
-            <el-menu-item v-for="item in managers" :index="item.path" :key="item.path">{{item.name}}</el-menu-item>
+            <el-menu-item v-for="item in managers" :index="formatPath(item.path)" :key="formatPath(item.path)">{{item.name}}</el-menu-item>
         </el-submenu>
         <el-submenu index="2">
             <template slot="title">
                 <i class="el-icon-setting"></i>
-                <span slot="title">设置</span>
+                <span slot="title">系统管理</span>
             </template>
             <el-menu-item v-for="item in settings" :index="item.path" :key="item.path">{{item.name}}</el-menu-item>
         </el-submenu>
@@ -29,44 +29,24 @@
 export default {
   data() {
     return {
-      isCollapse: false,
-      managers: [
-        {
-          name: "概览",
-          path: "/"
-        },
-        {
-          name: "分类",
-          path: "/cate"
-        },
-        {
-          name: "文章",
-          path: "/post"
-        },
-        {
-          name: "标签",
-          path: "/tag"
-        },
-        {
-          name: "链接",
-          path: "/link"
-        }
-      ],
-      settings: [
-        {
-          name: "全局设置",
-          path: "/setting"
-        },
-        {
-          name: "用户设置",
-          path: "/usersetting"
-        }
-      ]
+      isCollapse: false
     };
+  },
+  computed: {
+    managers() {
+      return this.$router.options.routes.slice(0, -3);
+    },
+    settings() {
+      return this.$router.options.routes.slice(-3);
+    }
   },
   methods: {
     handleSelect(key) {
-      this.$router.push({path:key})
+      this.$router.push({ path: key });
+    },
+    formatPath(path) {
+      var p = path.split("/")[1];
+      return '/' + p;
     }
   }
 };

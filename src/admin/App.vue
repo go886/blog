@@ -6,17 +6,17 @@
           <Sider />
         </div>
         <div class='container'>
-          <el-breadcrumb separator="/" >
-            <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-            <el-breadcrumb-item>{{$route.name}}</el-breadcrumb-item>
-          </el-breadcrumb>
+            <el-breadcrumb separator="/" >
+              <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+              <el-breadcrumb-item>{{$route.name}}</el-breadcrumb-item>
+            </el-breadcrumb>
            <transition name="fade" mode="out-in">
             <router-view></router-view>
             </transition>
         </div>
        
       </div>
-      <Footer class='footer'/>
+      <!-- <Footer class='footer'/> -->
   </div>
 </template>
 
@@ -40,35 +40,41 @@ html {
   height: 100%;
 }
 body {
-  min-height: 100%;
   display: flex;
   flex-direction: column;
-
   margin: 0px;
   padding: 0px;
   font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB,
     Microsoft YaHei, SimSun, sans-serif;
   font-size: 14px;
   -webkit-font-smoothing: antialiased;
-  background-color:#f5f5d5;
+  background-color: #f5f5d5;
 }
 #app {
   position: absolute;
   top: 0px;
   bottom: 0px;
   width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 .header {
   height: 60px;
+  min-height: 60px;
+  max-height: 60px;
   line-height: 60px;
   background: #20a0ff;
 }
 .content {
+  flex: 1;
   display: flex;
-  position: absolute;
-  top: 60px;
-  bottom: 45px;
+  position: relative;
+  top: 0px;
+  bottom: 0px;
   width: 100%;
+  height: 100%;
+  /* background-color: aqua; */
 }
 .footer {
   display: flex;
@@ -82,15 +88,22 @@ body {
 .container {
   /* background-color: blue; */
   flex: 1;
-  padding: 20px;
+  /* padding: 20px; */
   display: flex;
   flex-direction: column;
+  padding-left: 20px;
+  padding-top: 15px;
+  /* padding-right: 8px;
+  padding-bottom: 8px; */
 
-  overflow-y: scroll;
+  /* overflow-y: scroll; */
 }
 .side {
   /* background-color: red; */
   width: 200px;
   display: flex;
+}
+.el-breadcrumb {
+  margin-bottom: 10px;
 }
 </style>

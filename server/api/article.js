@@ -1,4 +1,4 @@
-const manager = require('./manager').posts
+const manager = require('./manager').article
 
 module.exports = {
    

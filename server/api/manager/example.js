@@ -1,5 +1,5 @@
 module.exports = {
-    post: {
+    article: {
         add_time: (new Date()).getTime(),
         edit_time: (new Date()).getTime(),
         category_id: 'net',

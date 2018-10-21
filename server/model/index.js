@@ -1,10 +1,13 @@
-const db = require('./db')
+const level = require('level')
 const Hashids = require('hashids');
 const hashids = new Hashids('xiami.com', 0, 'abcdefghijklmnopqrstuvwxyz');
+const db = level('./mydb')
+const INIT_INDEX = 1000000000000;
+
 
 function model(name, usekey = false) {
     this.name = name
-    this.id = 0;
+    this.id = INIT_INDEX;
     this.usekey = usekey
     return this;
 }
@@ -18,7 +21,7 @@ model.prototype = {
     },
     async add(o) {
         if (!o.id) {
-            if (this.id == 0) {
+            if (this.id == INIT_INDEX) {
                 const last = await this.last()
                 if (last && last.id) {
                     this.id = last.id
@@ -27,9 +30,11 @@ model.prototype = {
             this.id += 1;
             o.id = this.id
         }
-        if (this.usekey) o._k = hashids.encode(o.id)
         o.add_time = (new Date).getTime()
         o.edit_time = o.add_time
+        // o.id = o.add_time
+        if (this.usekey) o._k = hashids.encode(o.id)
+
         return (await (db.put(this.key(o.id), JSON.stringify(o)))) ? null : o.id
     },
     async remove(id) {
@@ -53,7 +58,7 @@ model.prototype = {
             cursor: id,
             next: true,
             des: des,
-            equalself:false,
+            equalself: false,
         })
         return list.length > 0 ? list[0] : null
     },
@@ -63,7 +68,7 @@ model.prototype = {
             cursor: id,
             next: false,
             des: des,
-            equalself:false,
+            equalself: false,
         })
         return list.length > 0 ? list[0] : null
     },
@@ -91,6 +96,8 @@ model.prototype = {
     /**
      * {
      * limit:20,
+     * page:0,
+     * pageSize:10,
      * cursor,
      * next:true
      * des
@@ -114,7 +121,10 @@ model.prototype = {
             options.start = prefix_end
             options.end = prefix
         }
-        if (op.cursor) {
+        if (op.page) { //page size 模式
+            options.limit = null;
+
+        } else if (op.cursor) {
             const cursor = this.key(op.cursor)
             const next = (op.next !== false) && (options.reverse !== true)
             const equal = (op.equalself !== false)
@@ -126,16 +136,35 @@ model.prototype = {
         }
         return new Promise((resolve, reject) => {
             let list = []
+            let i = 0;
+            const begin = (parseInt(op.page) -1) * parseInt(options.pageSize||10)
+            const end = (parseInt(op.page)) * parseInt(options.pageSize||10)
             db.createReadStream(options)
                 .on('data', (data) => {
-                    if (options.values == false) {
-                        list.push(data.key)
+                    ++i;
+
+                    if (op.page) {
+                        if (i >= begin && i < end) {
+                            if (options.values == false) {
+                                list.push(data.key)
+                            } else {
+                                let item = JSON.parse(data.value)
+                                if (item) {
+                                    list.push(item)
+                                }
+                            }
+                        }
                     } else {
-                        let item = JSON.parse(data.value)
-                        if (item) {
-                            list.push(item)
+                        if (options.values == false) {
+                            list.push(data.key)
+                        } else {
+                            let item = JSON.parse(data.value)
+                            if (item) {
+                                list.push(item)
+                            }
                         }
                     }
+
                 })
                 .on('error', function (err) {
                     reject(err)
@@ -170,7 +199,7 @@ model.prototype = {
 
 module.exports = {
     idx: new model(''), //indexs
-    post: new model('p', true), //post
+    article: new model('a', true), //article
     category: new model('c'),
     user: new model('u'),
     link: new model('l'),
