@@ -1,13 +1,31 @@
 <template>
- <el-form ref="form"  label-position="right" label-width="80px" :rules="rules" :model="setting" class="demo-ruleForm">
+ <el-form ref="form" style="width: 80%;overflow-y: scroll;"  label-position="right" label-width="100px" :rules="rules" :model="setting" class="demo-ruleForm">
       <el-form-item label="名称" prop="name">
           <el-input v-model="setting.name"></el-input>
+      </el-form-item>
+      <el-form-item label="网站主标题" prop="title">
+          <el-input v-model="setting.title"></el-input>
+      </el-form-item>
+      <el-form-item label="网站描述" prop="desc">
+          <el-input v-model="setting.desc"></el-input>
+      </el-form-item>
+      <el-form-item label="网站关键字" prop="keywords">
+          <el-input v-model="setting.keywords"></el-input>
       </el-form-item>
       <el-form-item label="URL" prop="url">
           <el-input v-model="setting.url"></el-input>
       </el-form-item>
-      <el-form-item label="备注" prop="desc">
-          <el-input v-model="setting.desc"></el-input>
+      <el-form-item label="加速地址" prop="cdn">
+          <el-input v-model="setting.cdn"></el-input>
+      </el-form-item>
+      <el-form-item label="主题选择" prop="theme">
+          <el-input v-model="setting.theme"></el-input>
+      </el-form-item>
+       <el-form-item label="统计代码" prop="tracker">
+          <el-input v-model="setting.tracker"></el-input>
+      </el-form-item>
+      <el-form-item label="评论" prop="comment">
+        <el-switch v-model="setting.comment"></el-switch>
       </el-form-item>
   </el-form>
 </template>
@@ -25,6 +43,19 @@ export default {
         url: [{ required: true, message: "请输入URL", trigger: "blur" }]
       }
     };
+  },
+  created() {
+    this.load();
+  },
+  methods: {
+    load() {
+        this.$http('/api/mgr/setting/get')
+        .then(res=>{
+            if (!res.error) {
+                this.setting = res;
+            }
+        });
+    }
   }
 };
 </script>

@@ -55,6 +55,14 @@ const r = [
     ]
   },
   {
+    target: manager.setting,
+    prefix: '/api/mgr/setting',
+    paths:[
+      '/update',
+      '/get',
+    ]
+  },
+  {
     target: api.cate,
     prefix:'/api/cate',
     paths:[

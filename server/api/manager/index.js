@@ -6,6 +6,7 @@ module.exports = {
     cate: require('./category'),
     article: require('./article'),
     link: require('./links'),
+    setting: require('./setting'),
 }
 
 var item = mgr.category.add({name:'net', title:'网络'})

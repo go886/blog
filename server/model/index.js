@@ -137,8 +137,8 @@ model.prototype = {
         return new Promise((resolve, reject) => {
             let list = []
             let i = 0;
-            const begin = (parseInt(op.page) -1) * parseInt(options.pageSize||10)
-            const end = (parseInt(op.page)) * parseInt(options.pageSize||10)
+            const begin = (parseInt(op.page) - 1) * parseInt(options.pageSize || 10)
+            const end = (parseInt(op.page)) * parseInt(options.pageSize || 10)
             db.createReadStream(options)
                 .on('data', (data) => {
                     ++i;
@@ -204,4 +204,5 @@ module.exports = {
     user: new model('u'),
     link: new model('l'),
     tag: new model('t'),
+    setting: new model('s'),
 }
