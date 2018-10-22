@@ -36,7 +36,7 @@ module.exports = {
     },
     async get(ctx) {
         const item = await mgr.get(ctx.query.id)
-        var cate = await category.get(item.category_id)
+        var cate = await category.get(item.category_id) ||{}
         item.category_name = cate.name
         item.category_title = cate.title
         return item
@@ -45,7 +45,7 @@ module.exports = {
         const pageSize = parseInt(ctx.query.pageSize || 10)
         const page = parseInt(ctx.query.page || 1)
         const total = await mgr.count()
-        const list = await mgr.query({ limit: pageSize, page, des: true })
+        const list = await mgr.query({ pageSize, page, des: true })
         for (var i = 0; i < list.length; ++i) {
             var item = list[i]
             var cate = await category.get(item.category_id)

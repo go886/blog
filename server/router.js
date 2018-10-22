@@ -7,20 +7,16 @@ const r = [
   {
     target: manager.user,
     prefix: '/api/mgr/user',
-    needLogin: true,
-    paths:[
-      '/add',
-      '/remove',
+    paths: [
       '/update',
       '/get',
-      '/query',
-      '/login'
+      '/login',
     ]
   },
   {
     target: manager.cate,
     prefix: '/api/mgr/cate',
-    paths:[
+    paths: [
       '/add',
       '/remove',
       '/update',
@@ -31,7 +27,7 @@ const r = [
   {
     target: manager.article,
     prefix: '/api/mgr/article',
-    paths:[
+    paths: [
       '/add',
       '/remove',
       '/update',
@@ -46,7 +42,7 @@ const r = [
   {
     target: manager.link,
     prefix: '/api/mgr/link',
-    paths:[
+    paths: [
       '/add',
       '/remove',
       '/update',
@@ -57,25 +53,25 @@ const r = [
   {
     target: manager.setting,
     prefix: '/api/mgr/setting',
-    paths:[
+    paths: [
       '/update',
       '/get',
     ]
   },
   {
     target: api.cate,
-    prefix:'/api/cate',
-    paths:[
-      'get',
-      'query'
+    prefix: '/api/cate',
+    paths: [
+      '/get',
+      '/query'
     ]
   },
   {
     target: api.article,
-    prefix:'/api/article',
-    paths:[
-      'get',
-      'query'
+    prefix: '/api/article',
+    paths: [
+      '/get',
+      '/query'
     ]
   },
 ]
@@ -85,8 +81,8 @@ r.forEach(v => {
     const r = new Router({
       prefix: o.prefix
     });
-    o.paths && o.paths.forEach(path=>{
-      r.get(path, async ctx=>{
+    o.paths && o.paths.forEach(path => {
+      r.get(path, async ctx => {
         var result = await o.target[path.substr(1)].call(o.target, ctx)
         ctx.response.type = 'json'
         ctx.response.body = result

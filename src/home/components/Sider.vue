@@ -37,4 +37,10 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.root {
+  /* background-color: red; */
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+}
 </style>

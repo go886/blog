@@ -4,6 +4,7 @@ Vue.use(VueRouter)
 
 
 import Index from './components/Index'
+import Post from './components/Post'
 import About from './components/About'
 
 const router = new VueRouter({
@@ -14,16 +15,34 @@ const router = new VueRouter({
             path: '/',
             name: '首页',
             component: Index
-        }, {
+        },
+        {
             path: '/about',
             name: '关于',
             component: About,
         },
         {
-            path: "/cate/:id",
-            name: "类别",
+            path: '/:cate/:id',
+            name: '文章',
+            component: Post
+        },
+        {
+            path: '/:cate',
+            name: '分类',
             component: Index
-        }
+        },
+
+        // {
+        //     path: '/:cate',
+        //     name: '类别',
+        //     component: Index
+        // },
+
+        // {
+        //     path: "/cate/:id",
+        //     name: "类别",
+        //     component: Index
+        // }
         // , {
         //     path: '*',
         //     redirect: '/'
@@ -31,12 +50,10 @@ const router = new VueRouter({
     ]
 });
 
-// router.beforeEach((to, from, next) => {
-//     if (!Vue.config.env.islogin && to.path.indexOf('/login') !== 0) {
-//         next('/login/' + encodeURIComponent(to.path))
-//     } else {
-//         next();
-//     }
-// })
+router.beforeEach((to, from, next) => {
+    console.log(to)
+    next();
+
+})
 
 export default router;

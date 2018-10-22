@@ -149,7 +149,7 @@ export default {
       });
     },
     onpost(post) {
-      window.open("/" + post.category_name + "/" + post._k);
+      window.open("/#/" + post.category_name + "/" + post._k);
     },
     oncate(post) {
       window.open("/cate/" + post.category_name);
@@ -175,7 +175,7 @@ export default {
       }).then(() => {
         this.$http("/api/mgr/article/remove", {
           params: {
-            id: post.id
+            id: post._k
           }
         }).then(res => {
           if (!res.error) {
@@ -189,7 +189,7 @@ export default {
       const publish = post.status == 0;
       this.$http("/api/mgr/article/publish", {
         params: {
-          id: post.id,
+          id: post._k,
           publish
         }
       }).then(res => {

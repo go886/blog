@@ -17,7 +17,7 @@
         </el-select>
        </el-form-item>
         <el-form-item label="正文" prop='content'>
-          <el-input type="textarea" v-model="post.content" style="min-height:200px;"></el-input>
+          <el-input type="textarea" :rows="20"  v-model="post.content" ></el-input>
         </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -84,10 +84,9 @@ export default {
     },
     oncommit() {
       this.$refs["form"].validate(valid => {
-        if (!valid) {
-        } else {
+        if (valid) {
           const post = {
-            id: this.post.id,
+            id: this.post._k,
             title: this.post.title,
             category_id: this.post.category_id,
             cover: this.post.cover,

@@ -10,6 +10,7 @@ import Tag from './components/Tag'
 import Link from './components/Link'
 import Setting from './components/Setting'
 import UserSetting from './components/UserSetting'
+// import Login from './components/Login'
 // import About from '@/components/About'
 
 const router = new VueRouter({
@@ -62,9 +63,9 @@ const router = new VueRouter({
             component: UserSetting,
         },
         // {
-        //     path: '/about',
-        //     name: '关于',
-        //     component: About,
+        //     path: '/login',
+        //     name: '登录',
+        //     component: Login,
         // },
         {
             path: '*',
@@ -74,7 +75,7 @@ const router = new VueRouter({
 });
 
 // router.beforeEach((to, from, next) => {
-//     if (!Vue.config.env.islogin && to.path.indexOf('/login') !== 0) {
+//     if (Vue.config.env.islogin !== true && to.path.indexOf('/login') !== 0) {
 //         next('/login/' + encodeURIComponent(to.path))
 //     } else {
 //         next();

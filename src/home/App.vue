@@ -1,17 +1,17 @@
 <template>
   <div id="app">
       <Header class='header'/>
-      <div class="content">
-        <div class='contentleft'>
-           <transition name="fade" mode="out-in">
-            <router-view></router-view>
-            </transition>
-        </div>
-        <div class="side">
+      <div class="container">
+        <div class="content">
+          <div class='contentleft'>
+            <transition name="fade" mode="out-in">
+              <router-view></router-view>
+              </transition>
+          </div>
           <Sider />
         </div>
+        <Footer class='footer'/>
       </div>
-      <Footer class='footer'/>
   </div>
 </template>
 
@@ -31,53 +31,81 @@ export default {
 </script>
 
 <style>
-html {
+html body {
+  width: 100%;
   height: 100%;
+  margin: 0px;
+  padding: 0px;
+  /* overflow: hidden; */
 }
 body {
-  min-height: 100%;
   display: flex;
   flex-direction: column;
-
   margin: 0px;
   padding: 0px;
   font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB,
     Microsoft YaHei, SimSun, sans-serif;
   font-size: 14px;
   -webkit-font-smoothing: antialiased;
+  background-color: rgba(0, 0, 0, 0.65);
 }
 #app {
-  color: #2c3e50;
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  background-color: #f0f2f5;
+  overflow: hidden;
+}
+.header {
+  /* height: 70px;
+  line-height: 70px; */
+  /* background: #20a0ff; */
+}
+.container {
   flex: 1;
   display: flex;
   flex-direction: column;
-}
-.header {
-  height: 60px;
-  line-height: 60px;
-  background: #20a0ff;
+  /* padding-top: 20px; */
+  /* position: relative;
+  top: 0px;
+  bottom: 0px;
+  width: 100%;
+  height: 100%; */
+  overflow-y: auto;
 }
 .content {
-  /* display: flex;
-  position: absolute; */
-  /* top: 60px;
-  bottom: 0px; */
   flex: 1;
   display: flex;
-  /* background: yellowgreen; */
+  flex-direction: row;
+  /* background-color: aquamarine; */
+  /* align-content: stretch; */
+  /* position: relative;
+  top: 0px;
+  width: 100%;
+  height: 100%; */
+  overflow-y: auto;
+  padding-top: 20px;
+  padding-bottom: 50px;
 }
 .footer {
+  /* position: relative; */
+  display: flex;
+  flex-direction: row;
   height: 45px;
+  min-height: 45px;
+  max-height: 45px;
   line-height: 45px;
   background: gray;
 }
 .contentleft {
   /* background-color: blue; */
   flex: 1;
-  padding: 20px;
-}
-.side {
-  /* background-color: red; */
-  width: 300px;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 </style>

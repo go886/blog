@@ -9,6 +9,6 @@ module.exports = {
     setting: require('./setting'),
 }
 
-var item = mgr.category.add({name:'net', title:'网络'})
-var item2 = mgr.category.add({name:'block', title:'区块链'})
+module.exports.cate.add({query:{name:'net', title:'网络'}})
+module.exports.cate.add({query:{name:'block', title:'区块链'}})
 

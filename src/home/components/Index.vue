@@ -3,8 +3,10 @@
    <div class='post' v-for="post in list" :key="post.id">
      <img class='cover' :src="post.cover"/>
      <div class='right'>
-      <div class='title'>{{post.title}}</div>
-      <div class='content' @click="onpost(post)">
+      <div class='title' >
+        <router-link :to="'/' + post.category_name + '/' +post._k" class='tool-text'>{{post.title}}</router-link>
+      </div>
+      <div class='content' >
         <div class='desc'>{{post.content}}</div>
       </div>
       <div class='tool'>
@@ -14,6 +16,14 @@
       </div>
      </div>
    </div>
+    <el-pagination v-if='list.length > 0'
+      :page-size="pageSize"
+      :current-page.sync="page"  
+      layout="total, prev, pager, next"
+      :total="total"
+      @current-change="onPageChanged"
+      background>
+    </el-pagination>
   </div>
 </template>
 
@@ -23,22 +33,29 @@ export default {
   props: {},
   data: function() {
     return {
-      list: []
+      list: [],
+      pageSize: 5,
+      page: 1,
+      total: 0
     };
   },
   created() {
-    this.$http
-      .get("/api/post/query", {params:this.$route.params, cate: this.$route.path.indexOf('/cate') == 0})
-      .then(res => {
-        this.list = res.data.list;
-        this.next = res.data.next;
-      })
-      .catch(res => {
-        this.$message({
-          message: res,
-          type: "warning"
-        });
-      });
+    this.page = parseInt(this.$route.query.page || 1);
+    this.load();
+    // this.$http("/api/article/query", {
+    //   params: this.$route.params,
+    //   cate: this.$route.path.indexOf("/cate") == 0
+    // })
+    //   .then(res => {
+    //     this.list = res.list;
+    //     this.next = res.next;
+    //   })
+    //   .catch(res => {
+    //     this.$message({
+    //       message: res,
+    //       type: "warning"
+    //     });
+    //   });
   },
   computed: {
     time() {
@@ -46,19 +63,34 @@ export default {
     }
   },
   methods: {
-    gmtDateFormatter(time){
+    gmtDateFormatter(time) {
       return moment(time).format("YYYY/MM/DD");
     },
-    oncategory(ev, post){
-              ev.cancelBubble=true
-
-      this.$router.push('/cate/' + post.category_id)
-      alert('a')
+    load() {
+      this.$http("/api/article/query", {
+        params: {
+          pageSize: this.pageSize,
+          page: this.page,
+          cate:
+            this.$route.name == "分类" ? this.$route.path.substring(1) : null
+        }
+      }).then(res => {
+        if (!res.error) {
+          this.list = res.list;
+          this.total = res.total;
+          this.page = res.page;
+        }
+      });
     },
-    onpost(post) {
-      post;
-      // this.$router.push('/about')
-      location.href = "http://localhost:3000/api/post/get?id=" + post.id;
+    onPageChanged(page) {
+      this.$router.push({ query: { page } });
+      this.load();
+    },
+    oncategory(ev, post) {
+      ev.cancelBubble = true;
+
+      this.$router.push("/cate/" + post.category_id);
+      alert("a");
     }
   }
 };
@@ -109,7 +141,7 @@ export default {
   margin-right: 5px;
 }
 .tool-text {
-  font-size:8;
+  font-size: 8;
   margin-right: 10px;
 }
 </style>

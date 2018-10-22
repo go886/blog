@@ -39,7 +39,7 @@ export default {
   },
   methods: {
     onlogin() {
-      this.$http("/api/user/login", {
+      this.$http("/api/mgr/user/login", {
         params: { name: this.name, pwd: md5(this.pwd) }
       }).then(res => {
         if (!res.error) {

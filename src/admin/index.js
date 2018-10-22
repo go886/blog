@@ -7,6 +7,7 @@ import router from './router'
 // import mock from './mock'
 // mock;
 Vue.config.productionTip = false
+Vue.config.env = {  }
 Vue.use(ElementUI)
 
 
@@ -14,7 +15,6 @@ let http = axios.create()
 http.defaults.timeout = 2500;
 http.interceptors.response.use((response) => {
   if (response.data && response.data.error) {
-    console.log('a')
     Vue.prototype.$message({
       message: response.data.error,
       type: "warning"
@@ -22,8 +22,6 @@ http.interceptors.response.use((response) => {
   }
   return response.data
 }, (error) => {
-  console.log('b')
-
   Vue.prototype.$message({
     message: error.response.data,
     type: "warning"

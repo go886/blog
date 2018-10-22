@@ -19,6 +19,12 @@ model.prototype = {
     sub(name) {
         return new model([this.name, name].join('.'));
     },
+    encode(id) {
+        return this.usekey ? hashids.encode(id) : id;
+    },
+    decode(id) {
+        return this.usekey ? hashids.decode(id) : id;
+    },
     async add(o) {
         if (!o.id) {
             if (this.id == INIT_INDEX) {
@@ -33,12 +39,12 @@ model.prototype = {
         o.add_time = (new Date).getTime()
         o.edit_time = o.add_time
         // o.id = o.add_time
-        if (this.usekey) o._k = hashids.encode(o.id)
+        if (this.usekey) o._k = this.encode(o.id)
 
         return (await (db.put(this.key(o.id), JSON.stringify(o)))) ? null : o.id
     },
     async remove(id) {
-        return (await db.del(this.key(id)) ? null : id)
+        return (await db.del(this.key(this.decode(id))) ? null : id)
     },
     async update(o) {
         o = JSON.parse(JSON.stringify(o))
@@ -47,7 +53,7 @@ model.prototype = {
     },
     async get(id) {
         try {
-            return JSON.parse(await db.get(this.key(id)))
+            return JSON.parse(await db.get(this.key(this.decode(id))))
         } catch (error) {
             return null;
         }
@@ -125,7 +131,7 @@ model.prototype = {
             options.limit = null;
 
         } else if (op.cursor) {
-            const cursor = this.key(op.cursor)
+            const cursor = this.key(this.decode(op.cursor))
             const next = (op.next !== false) && (options.reverse !== true)
             const equal = (op.equalself !== false)
             if (next) {
@@ -137,14 +143,14 @@ model.prototype = {
         return new Promise((resolve, reject) => {
             let list = []
             let i = 0;
-            const begin = (parseInt(op.page) - 1) * parseInt(options.pageSize || 10)
-            const end = (parseInt(op.page)) * parseInt(options.pageSize || 10)
+            const begin = (parseInt(op.page) - 1) * parseInt(op.pageSize || 10)
+            const end = (parseInt(op.page)) * parseInt(op.pageSize || 10)
             db.createReadStream(options)
                 .on('data', (data) => {
                     ++i;
 
                     if (op.page) {
-                        if (i >= begin && i < end) {
+                        if (i > begin && i <= end) {
                             if (options.values == false) {
                                 list.push(data.key)
                             } else {
