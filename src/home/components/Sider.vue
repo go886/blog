@@ -39,6 +39,8 @@ export default {
 <style scoped>
 .root {
   /* background-color: red; */
+  min-width: 300px;
+  max-width: 300px;
   width: 300px;
   display: flex;
   flex-direction: column;
