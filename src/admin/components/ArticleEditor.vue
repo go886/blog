@@ -42,7 +42,7 @@ export default {
       rules: {
         title: [
           { required: true, message: "请输入标题", trigger: "blur" },
-          { min: 3, max: 20, message: "长度在 3 到 20 个字符", trigger: "blur" }
+          { min: 3, max: 40, message: "长度在 3 到 40 个字符", trigger: "blur" }
         ],
         category_id: [
           { required: true, message: "请选择分类", trigger: "blur" }

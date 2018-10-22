@@ -74,7 +74,7 @@ module.exports = {
         return { error: '未知错误' }
     },
     async token() {
-        const user = await mgr.get("user")
+        const user = await mgr.get("user")||{}
         const token = {
             name: user.name,
             pwd: md5(user.pwd + user.name)
