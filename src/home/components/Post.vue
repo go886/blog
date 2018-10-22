@@ -6,7 +6,7 @@
           <div class='tool-text' style="margin-left:7px;">{{gmtDateFormatter(post.add_time)}}</div>
         </i>
       </div>
-      <div class="content" v-html="markDownToHtml(post.content)">
+      <div class="markdown" v-html="markDownToHtml(post.content)">
       </div>
   </div>
 </template>
@@ -101,14 +101,14 @@ export default {
   flex-direction: row;
   margin: 10px;
 }
-.content {
+.markdown {
   display: flex;
   flex-direction: column;
   flex: 1;
   /* text-indent: 2em; */
   padding-left: 100px;
 }
-.content >>> .post-img {
+.markdown >>> .post-img {
   max-width: 70% !important;
   height: auto;
   display: block;
@@ -116,20 +116,23 @@ export default {
   border-radius: 8px;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
 }
-.content >>> .hljs {
+.markdown >>> .hljs {
   margin: 15px 0;
   border-radius: 8px;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
 }
-.content >>> p {
+.markdown >>> p {
   padding: 0;
   margin: 0;
 }
-.content >>> code {
+.markdown >>> p code {
   background-color: rgba(0, 0, 0, 0.06);
   padding: 0 2px;
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 2px 2px;
+}
+.markdown >>> a {
+  color: #0366d6;
 }
 </style>
 
