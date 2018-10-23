@@ -20,7 +20,7 @@ const router = new VueRouter({
         {
             path: '/',
             name: '概览',
-            component: Index
+            component: Index,
         },
         {
             name: "公告",
@@ -74,12 +74,12 @@ const router = new VueRouter({
     ]
 });
 
-// router.beforeEach((to, from, next) => {
-//     if (Vue.config.env.islogin !== true && to.path.indexOf('/login') !== 0) {
-//         next('/login/' + encodeURIComponent(to.path))
-//     } else {
-//         next();
-//     }
-// })
+router.beforeEach((to, from, next) => {
+    /* 路由发生变化修改页面title */
+    if (to.name) {
+        document.title = to.name + " - 管理后台"
+    }
+    next()
+})
 
 export default router;

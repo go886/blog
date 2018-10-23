@@ -74,6 +74,20 @@ const r = [
       '/query'
     ]
   },
+  {
+    target: api.link,
+    prefix: '/api/link',
+    paths: [
+      '/query'
+    ]
+  },
+  {
+    target: api.blog,
+    prefix: '/api/blog',
+    paths: [
+      '/query'
+    ]
+  }
 ]
 
 r.forEach(v => {
@@ -82,13 +96,14 @@ r.forEach(v => {
       prefix: o.prefix
     });
     o.paths && o.paths.forEach(path => {
-      r.get(path, async ctx => {
+      r.all(path, async ctx => {
         var result = await o.target[path.substr(1)].call(o.target, ctx)
         ctx.response.type = 'json'
         ctx.response.body = result
       });
     })
     router.use(r.routes())
+    router.use(r.allowedMethods())
   })(v)
 });
 

@@ -1,4 +1,6 @@
 module.exports = {
     cate: require('./category'),
-    article: require('./article')
+    article: require('./article'),
+    link: require('./link'),
+    blog: require('./blog'),
 }

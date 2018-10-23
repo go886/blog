@@ -16,8 +16,11 @@
             <el-option v-for="item in categorys" :label="item.title" :value="item.id" :key='item.id'></el-option>
         </el-select>
        </el-form-item>
+        <el-form-item label="摘要" prop='summary'>
+          <el-input type="textarea" :rows="3"  v-model="post.summary" ></el-input>
+        </el-form-item>
         <el-form-item label="正文" prop='content'>
-          <el-input type="textarea" :rows="20"  v-model="post.content" ></el-input>
+          <el-input type="textarea" :rows="18"  v-model="post.content" ></el-input>
         </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -46,6 +49,10 @@ export default {
         ],
         category_id: [
           { required: true, message: "请选择分类", trigger: "blur" }
+        ],
+        summary: [
+          { required: true, message: "请输入摘要", trigger: "blur" },
+          { min: 50, message: "至少输入50个字符", trigger: "blur" }
         ],
         content: [
           { required: true, message: "请输入内容", trigger: "blur" },
@@ -90,7 +97,8 @@ export default {
             title: this.post.title,
             category_id: this.post.category_id,
             cover: this.post.cover,
-            content: this.post.content
+            content: this.post.content,
+            summary: this.post.summary,
           };
 
           const loading = this.$loading({
@@ -100,7 +108,7 @@ export default {
             background: "rgba(0, 0, 0, 0.7)"
           });
 
-          this.$http(
+          this.$http.post(
             this.edit ? "/api/mgr/article/update" : "/api/mgr/article/add",
             {
               params: post

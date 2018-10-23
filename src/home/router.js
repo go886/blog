@@ -6,6 +6,7 @@ Vue.use(VueRouter)
 import Index from './components/Index'
 import Post from './components/Post'
 import About from './components/About'
+import List from './components/Contents'
 
 const router = new VueRouter({
     // mode: 'history',
@@ -14,7 +15,7 @@ const router = new VueRouter({
         {
             path: '/',
             name: '首页',
-            component: Index
+            component: List,
         },
         {
             path: '/about',
@@ -29,7 +30,7 @@ const router = new VueRouter({
         {
             path: '/:cate',
             name: '分类',
-            component: Index
+            component: List
         },
 
         // {

@@ -5,15 +5,19 @@ const idx = db.idx
 const ex = require('./example')
 module.exports = {
     async add(ctx) {
-        var article = JSON.parse(JSON.stringify(ex.article))
-        var cate = await category.find('name', 'net') || {}
-        article.category_id = cate.id
-        article.category_name = cate.name
-
-        article.title = ctx.query.title || "test"
-
-        const id = await mgr.add(article)
-        await idx.sub(cate.name).add({ id, title: article.title })
+        let post = ctx.query
+        if (!(post.title && post.category_id && post.content && post.summary)) {
+            return { error: "内容错误" }
+        }
+        var cate = await category.get(post.category_id)
+        if (!cate) {
+            return { error: "无效的分类" }
+        }
+        post.category_id = cate.id
+        post.category_name = cate.name
+        post.status = 0
+        const id = await mgr.add(post)
+        await idx.sub(cate.name).add({ id, key: post._k, title: post.title })
         return { id }
     },
     async remove(ctx) {
@@ -36,12 +40,38 @@ module.exports = {
     },
     async get(ctx) {
         const item = await mgr.get(ctx.query.id)
-        var cate = await category.get(item.category_id) ||{}
+        var cate = await category.get(item.category_id) || {}
         item.category_name = cate.name
         item.category_title = cate.title
         return item
     },
     async query(ctx) {
+        const category_name = ctx.query.cate;
+        if (category_name) {
+            const source = idx.sub(category_name)
+            const pageSize = parseInt(ctx.query.pageSize || 10)
+            const page = parseInt(ctx.query.page || 1)
+            const total = await source.count()
+            const array = await source.query({ pageSize, page, des: true })
+
+            let list = []
+            if (array && array.length > 0) {
+                for (var i = 0; i < array.length; ++i) {
+                    const item = await mgr.get(array[i].key)
+                    if (item) {
+                        var cate = await category.get(item.category_id)
+                        if (cate) {
+                            item.category_name = cate.name
+                            item.category_title = cate.title
+                        }
+
+                        list.push(item)
+                    }
+                }
+            }
+            return { list, page, total }
+        }
+
         const pageSize = parseInt(ctx.query.pageSize || 10)
         const page = parseInt(ctx.query.page || 1)
         const total = await mgr.count()

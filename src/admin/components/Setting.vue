@@ -1,11 +1,8 @@
 <template>
 <div class='root'>
  <el-form ref="form" style="width: 70%;"  label-position="right" label-width="100px" :rules="rules" :model="setting" class="demo-ruleForm">
-      <el-form-item label="名称" prop="name" >
+      <el-form-item label="网站名称" prop="name" >
           <el-input v-model="setting.name"></el-input>
-      </el-form-item>
-      <el-form-item label="网站主标题" prop="title">
-          <el-input v-model="setting.title"></el-input>
       </el-form-item>
       <el-form-item label="网站描述" prop="desc">
           <el-input v-model="setting.desc"></el-input>
@@ -82,6 +79,8 @@ export default {
                 message: "保存成功"
               });
             }
+          }).catch(()=>{
+            loading.close()
           });
         }
       });

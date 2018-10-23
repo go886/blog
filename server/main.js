@@ -2,6 +2,8 @@ const session = require('koa-session');
 const Koa = require('koa');
 const path = require('path');
 const static = require('koa-static');
+const bodyParser = require('koa-bodyparser');
+
 const router = require('./router')
 
 const main = static(path.join(__dirname, '../dist'));
@@ -45,6 +47,13 @@ app.use(async (ctx, next) => {
   return await next()
 });
 app.use(main)
+app.use(bodyParser());
+app.use(async (ctx, next) => {
+  if (ctx.method == 'POST' && ctx.querystring == "" && ctx.request.body && ctx.request.body.params) {
+    ctx.query = ctx.request.body.params
+  }
+  return await next()
+});
 app
   .use(router.routes())
   .use(router.allowedMethods());
