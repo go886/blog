@@ -42,13 +42,7 @@ export default {
     md() {
       try {
         const html = String(this.$props.value);
-        console.log('html:', html)
-        if (this.$props.summary == true) {
-          const trimHtml = require("trim-html");
-          return trimHtml(md.render(html), { limit: 200 }).html;
-        } else {
-          return md.render(html);
-        }
+        return md.render(html);
       } catch (error) {
         return "";
       }
@@ -78,7 +72,7 @@ export default {
   margin: 15px 0;
   border-radius: 8px;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
-  max-width: 900px;
+  max-width: 850px;
   /* max-width: 800px; */
 }
 

@@ -23,9 +23,9 @@
     "markdown-it-linkify-images": "^1.1.0",
     "md5": "^2.2.1",
     "moment": "^2.22.2",
-    "trim-html": "^0.1.9",
     "vue": "^2.5.17",
-    "vue-router": "^3.0.1"
+    "vue-router": "^3.0.1",
+    "vuex": "^3.0.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.0.5",

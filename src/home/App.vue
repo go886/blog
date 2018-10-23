@@ -4,10 +4,12 @@
       <div class="container">
         <Sider class="sider"/>
         <div class="content">
-          <transition name="fade" mode="out-in">
+          <div class="top">
+            <transition name="fade" mode="out-in">
               <router-view></router-view>
-          </transition>
-          <!-- <Footer class='footer'/> -->
+            </transition>
+          </div>
+          <Footer class='footer'/>
         </div>
       </div>
   </div>
@@ -35,6 +37,9 @@ export default {
       this.data = res;
       if (res.setting) {
         document.title = res.setting.name;
+        if (res.setting.tracker) {
+          new Function(res.setting.tracker)();
+        }
       }
     });
   }
@@ -61,15 +66,15 @@ export default {
   /* padding-top: 20px; */
   min-width: 40%;
   max-width: 100%;
-  align-self: center;
+  /* align-self: center; */
   /* background-color: bisque; */
 }
 .sider {
   min-width: 10px;
   max-width: 20%;
-  width: 160px;
-  padding-left: 50px;
-  padding-right: 10px;
+  width: 200px;
+  /* padding-left: 50px;
+  padding-right: 10px; */
   border-right: 1px solid #eaecef;
 }
 .content {
@@ -79,17 +84,23 @@ export default {
   max-width: 100%;
   min-width: 80%;
   overflow-y: auto;
-  /* align-items: center; */
+  align-items: center;
+  /* background-color: red; */
+}
+.top {
+  flex: 1;
 }
 .footer {
-  /* position: relative; */
+  /* position: relative;
+  left: 0;
+  top: 0; */
   display: flex;
   flex-direction: row;
   height: 45px;
   min-height: 45px;
   max-height: 45px;
   line-height: 45px;
-  background: gray;
+  /* background: gray; */
 }
 </style>
 <style>
@@ -120,9 +131,8 @@ a:hover {
   text-decoration: none;
 }
 h {
-  color:#333;
+  color: #333;
   color: #111111;
-
 }
 </style>
 

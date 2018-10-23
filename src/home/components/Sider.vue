@@ -1,16 +1,18 @@
 <template>
   <div class="root">
     <div class="pannel">
-      <h3>文章分类</h3>
-      <li v-for="item in cates" :key="item.id">
-      <router-link  :to="'/' + item.name" class='link' >{{item.title}}</router-link>
-      </li>
-    </div>
-    <div class="pannel" v-if="links.length > 0">
-      <h3>友情链接</h3>
-       <li v-for="item in links" :key="item.id">
-         <a :href="item.url" target="_blank">{{item.name}}</a>
-      </li>
+      <div >
+        <h4>文章分类</h4>
+        <li v-for="item in cates" :key="item.id">
+        <router-link  :to="'/' + item.name" class='link' >{{item.title }}</router-link>
+        </li>
+      </div>
+      <div  v-if="links.length > 0">
+        <h4>友情链接</h4>
+        <li v-for="item in links" :key="item.id">
+          <a :href="item.url" target="_blank">{{item.name}}</a>
+        </li>
+      </div>
     </div>
   </div>
 </template>
@@ -34,12 +36,11 @@ export default {
         }
       });
 
-      this.$http("/api/link/query")
-      .then(res=>{
+      this.$http("/api/link/query").then(res => {
         if (!res.error) {
           this.links = res;
         }
-      })
+      });
     }
   }
 };
@@ -53,6 +54,20 @@ export default {
   max-width: 300px;
   width: 300px; */
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+.pannel {
+  /* background-color: blue; */
+  padding: 20px;
+}
+li {
+  list-style-type: none;
+  margin-left: 12px;
+}
+
+a {
+  font-size: 13px;
+  text-overflow: ellipsis;
 }
 </style>

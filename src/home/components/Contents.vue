@@ -5,7 +5,7 @@
       <div class='content' >
         <img v-if="post.cover" class='cover' :src="post.cover"/>
 
-        <div class='desc'>
+        <div class='desc' v-if="post.summary">
           <p style="text-indent: 2em;margin:0;padding:0;">{{ post.summary +'...' }}</p>
         </div>
       </div>
@@ -113,7 +113,7 @@ export default {
 <style scoped>
 .root {
   max-width: 75%;
-  padding: 20px 100px 50px 100px;
+  padding: 20px 100px 50px 50px;
 }
 .post {
   display: flex;
@@ -121,6 +121,10 @@ export default {
   background-color: #fff;
   margin-bottom: 20px;
   padding: 50px;
+
+  height: auto;
+  display: block;
+  border-radius: 5px;
 }
 .cover {
   align-self: center;

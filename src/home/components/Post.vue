@@ -58,7 +58,7 @@ export default {
   /* padding-left: 270px;
   padding-right: 270px; */
   /* background-color: #0099ff; */
-  padding: 0px 100px 100px 100px;
+  padding: 30px 100px 100px 100px;
 }
 .header {
   display: flex;
