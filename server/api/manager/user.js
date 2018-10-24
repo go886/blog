@@ -54,8 +54,7 @@ module.exports = {
         if (!user2) { //第一次登录
             user.id = 'user'
             user.nick = 'admin'
-            user.logo = 'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1540180801&di=8266b89b06c96a7f94333a6fe217c8dd&src=http://bpic.588ku.com/element_origin_min_pic/01/31/87/96573b585a7c9c4.jpg'
-            if (await mgr.update(user)) {
+            if (await mgr.add(user)) {
                 //cookie
                 ctx.session.token = await this.token()
                 return { succeed: true }

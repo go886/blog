@@ -11,15 +11,7 @@ module.exports = {
         return { id: await mgr.remove(ctx.query.id) }
     },
     async update(ctx) {
-        let item = await mgr.get(ctx.query.id)
-        if (!item) return { error: 'no find' }
-
-        ctx.query && Object.keys(ctx.query).forEach(k => {
-            if (['id', '_k', 'add_time', 'edit_time'].indexOf(k) == -1) {
-                item[k] = ctx.query[k]
-            }
-        })
-        let id = await mgr.update(item)
+        let id = await mgr.update(ctx.query)
         return { id }
     },
     async get(ctx) {
