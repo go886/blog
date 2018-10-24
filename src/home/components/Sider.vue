@@ -53,13 +53,16 @@ export default {
   /* min-width: 300px;
   max-width: 300px;
   width: 300px; */
+  min-width: 100px;
+  /* max-width: 220px; */
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
+  border-left: 1px solid #eaecef;
 }
 .pannel {
   /* background-color: blue; */
-  padding: 20px;
+  padding: 10px;
+  /* background-color: aliceblue; */
 }
 li {
   list-style-type: none;

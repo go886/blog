@@ -113,7 +113,9 @@ export default {
 <style scoped>
 .root {
   max-width: 75%;
-  padding: 20px 100px 50px 50px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
 }
 .post {
   display: flex;

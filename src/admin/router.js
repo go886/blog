@@ -10,6 +10,7 @@ import Tag from './components/Tag'
 import Link from './components/Link'
 import Setting from './components/Setting'
 import UserSetting from './components/UserSetting'
+import Test from './components/Test'
 // import Login from './components/Login'
 // import About from '@/components/About'
 
@@ -61,6 +62,11 @@ const router = new VueRouter({
             path: '/usersetting',
             name: '用户设置',
             component: UserSetting,
+        },
+        {
+            path: '/test',
+            name: 'api-test',
+            component: Test,
         },
         // {
         //     path: '/login',

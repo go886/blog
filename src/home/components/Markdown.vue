@@ -67,6 +67,7 @@ export default {
   line-height: 1;
   /* margin: 0px 50px 50px 80px; */
   /* padding: 0px 50px 50px 80px; */
+  /* background-color: #666; */
 }
 .markdown >>> .hljs {
   margin: 15px 0;

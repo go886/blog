@@ -1,7 +1,7 @@
 const level = require('level')
 const Hashids = require('hashids');
 const hashids = new Hashids('xiami.com', 0, 'abcdefghijklmnopqrstuvwxyz');
-const db = level('./mydb')
+const db = level('./mydb', { valueEncoding: "json" })
 const INIT_INDEX = 1000000000000;
 
 
@@ -16,8 +16,8 @@ model.prototype = {
     key(id) {
         return [this.name, id].join('.')
     },
-    sub(name) {
-        return new model([this.name, name].join('.'));
+    sub(name, usekey = false) {
+        return new model([this.name||'',name].join('.'), usekey);
     },
     encode(id) {
         return this.usekey ? hashids.encode(id) : id;
@@ -41,7 +41,7 @@ model.prototype = {
         // o.id = o.add_time
         if (this.usekey) o._k = this.encode(o.id)
 
-        return (await (db.put(this.key(o.id), JSON.stringify(o)))) ? null : o.id
+        return (await (db.put(this.key(o.id), o))) ? null : o.id
     },
     async remove(id) {
         return (await db.del(this.key(this.decode(id))) ? null : id)
@@ -49,11 +49,11 @@ model.prototype = {
     async update(o) {
         o = JSON.parse(JSON.stringify(o))
         o.edit_time = (new Date).getTime()
-        return (await (db.put(this.key(o.id), JSON.stringify(o)))) ? null : o.id
+        return (await (db.put(this.key(o.id), o))) ? null : o.id
     },
     async get(id) {
         try {
-            return JSON.parse(await db.get(this.key(this.decode(id))))
+            return await db.get(this.key(this.decode(id)))
         } catch (error) {
             return null;
         }
@@ -154,7 +154,7 @@ model.prototype = {
                             if (options.values == false) {
                                 list.push(data.key)
                             } else {
-                                let item = JSON.parse(data.value)
+                                let item = data.value
                                 if (item) {
                                     list.push(item)
                                 }
@@ -164,7 +164,7 @@ model.prototype = {
                         if (options.values == false) {
                             list.push(data.key)
                         } else {
-                            let item = JSON.parse(data.value)
+                            let item = data.value
                             if (item) {
                                 list.push(item)
                             }
@@ -188,7 +188,7 @@ model.prototype = {
             var list = []
             db.createReadStream()
                 .on('data', (data) => {
-                    data.value = JSON.parse(data.value)
+                    data.value = data.value
                     list.push(data)
                 })
                 .on('error', function (err) {
@@ -202,13 +202,20 @@ model.prototype = {
         });
     }
 }
-
 module.exports = {
-    idx: new model(''), //indexs
+    // idx: new model(''), //indexs
     article: new model('a', true), //article
     category: new model('c'),
     user: new model('u'),
     link: new model('l'),
     tag: new model('t'),
     setting: new model('s'),
+    idx: {
+        tag: new model('.tag'),     //通用标签索引
+        ptag: new model('.ptag'),   //发布标签索引 
+        cate: new model('.cate'),    //通用分类索引
+        pcate: new model('.pcate'), //分类发布状态索引
+        publish: new model('.p'),   //通用发布状态索引 
+        title: new model('.title'),  //文章标题索引
+    }
 }

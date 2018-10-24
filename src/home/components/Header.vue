@@ -1,14 +1,16 @@
 <template>
   <div class="root">
-    <el-menu class="el-menu-demo" @select="handleSelect" mode="horizontal" 
-    background-color="#545C64"
-    text-color="#fff"
-    active-text-color="#ffd04b"
-    :default-active="formatPath($route.path)">
-        <el-menu-item v-for="item in paths" :index='item.path' :key="item.path">
-          {{item.name}}
-        </el-menu-item>
-    </el-menu>
+    <div class="menu">
+      <el-menu class="el-menu-demo" @select="handleSelect" mode="horizontal" 
+        background-color="#545C64"
+        text-color="#fff"
+        active-text-color="#ffd04b"
+        :default-active="formatPath($route.path)">
+            <el-menu-item v-for="item in paths" :index='item.path' :key="item.path">
+              {{item.name}}
+            </el-menu-item>
+        </el-menu>
+    </div>
   </div>
 </template>
 
@@ -51,10 +53,20 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .root {
+  height: 60px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 0;
+  background-color: #545c64;
   display: flex;
   flex-direction: row;
-  /* background-color: #545C64; */
+  justify-content: flex-end;
+  padding-right: 200px;
+  z-index: 100;
 }
+
 .item {
   margin-left: 35px;
 }
@@ -64,7 +76,8 @@ export default {
 .el-menu-item.is-active {
   background-color: transparent;
 }
-.el-menu--horizontal>.el-menu-item:not(.is-disabled):focus, .el-menu--horizontal>.el-menu-item:not(.is-disabled):hover {
-  background-color:#545C64;
+.el-menu--horizontal > .el-menu-item:not(.is-disabled):focus,
+.el-menu--horizontal > .el-menu-item:not(.is-disabled):hover {
+  background-color: #545c64;
 }
 </style>

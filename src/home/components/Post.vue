@@ -51,14 +51,8 @@ export default {
   position: relative;
   left: 0;
   top: 0;
-  /* width: 100%;
-  height: 100%; */
-  /* display: flex; */
-  /* flex-direction: column; */
-  /* padding-left: 270px;
-  padding-right: 270px; */
-  /* background-color: #0099ff; */
-  padding: 30px 100px 100px 100px;
+  padding: 50px;
+  /* padding: 30px 100px 100px 100px; */
 }
 .header {
   display: flex;

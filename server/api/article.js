@@ -6,6 +6,7 @@ module.exports = {
         return await manager.get(ctx)
     },
     async query(ctx) {
+        ctx.query.status = 1;
         return await manager.query(ctx)
     },
 }
