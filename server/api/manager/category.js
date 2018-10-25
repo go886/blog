@@ -1,7 +1,7 @@
 const mgr = require('../../model/index').category
 module.exports = {
     async add(ctx) {
-        const item = await mgr.find('name', ctx.query.name)
+        const item = await mgr.findOne({'name': ctx.query.name})
         if (item) return { error: 'cateory exists' }
 
         const id = await mgr.add({name:ctx.query.name, title:ctx.query.title})

@@ -1,38 +1,3 @@
-// const Datastore = require('nedb')
-
-// function test() {
-//     const db = new Datastore({
-//         filename: './mydb2',
-//         autoload: true,
-//         timestampData:true,
-//     });
-
-//     // for (var i =0;i<10; ++i) {
-//     //     db.insert({
-//     //         _id:i,
-//     //         id:i,
-//     //         title:'abc',
-//     //         name:'abc'
-//     //     },(err, doc)=>{
-    
-//     //     });
-//     // }
-
-//     // db.remove({_id:1},()=>{})
-//     db.find({title:'abc'}).sort({_id:1}).exec((err,docs)=>{
-//         console.log(docs)
-//     })
-   
-// }
-
-// test()
-
-
-
-
-
-
-
 const level = require('level')
 const Hashids = require('hashids');
 const hashids = new Hashids('xiami.com', 0, 'abcdefghijklmnopqrstuvwxyz');
@@ -153,19 +118,51 @@ model.prototype = {
         const r = await this.search(op)
         return r.list.length
     },
-    async find(key, value) {
-        const r = await this.search();
-        if (r.list.length > 0) {
-            for (var i = 0; i < r.list.length; ++i) {
-                const item = r.list[i]
-                if (item[key] == value) {
-                    return item;
-                }
-            }
-        }
+    async findOne(query) {
+        const list = await this.find(query, 1);
+        return list.length > 0 ? list[0] : null
     },
+    async find(query, limit = MAX_LIMIT) {
+        const prefix = this.name + SEP;
+        const prefix_end = this.name + SEP_NEXT;
+        let options = {
+            limit: MAX_LIMIT,
+            reverse: false,
+            start: prefix,
+            end: prefix_end,
+            values: true,
+        }
+        const keys = Object.keys(query)
+        return new Promise((resolve, reject) => {
+            let list = []
+            db.createReadStream(options)
+                .on('data', (data) => {
+                    if (list.length < limit) {
+                        var v = data.value;
+                        var bfind = true;
+                        for (var i = 0; i < keys.length; ++i) {
+                            if (query[keys[i]] !== v[keys[i]]) {
+                                bfind = false;
+                                break;
+                            }
+                        }
 
+                        if (bfind) {
+                            list.push(v)
 
+                        }
+                    }
+                })
+                .on('error', function (err) {
+                    reject(err)
+                })
+                .on('close', function () {
+                })
+                .on('end', function () {
+                    resolve(list)
+                });
+        });
+    },
     /**
      * 
      * @param {
@@ -207,7 +204,11 @@ model.prototype = {
         if (op.query && Object.keys(op.query).length > 0) {
             Object.keys(op.query).forEach(k => {
                 if (op.query[k]) {
-                    indexs.push([SEP + this.name, [k, op.query[k]].join(INDEX_SEP)].join(SEP))
+                    if (this.props && this.props.indexOf(k) > -1) {
+                        indexs.push([SEP + this.name, [k, op.query[k]].join(INDEX_SEP)].join(SEP))
+                    } else {
+                        console.error(k + ' not indexing')
+                    }
                 }
             });
         }
@@ -261,8 +262,6 @@ model.prototype = {
         return { total, list, page }
     },
 
-
-
     async view() {
         return new Promise((resolve, reject) => {
             var list = []
@@ -284,7 +283,7 @@ model.prototype = {
 }
 module.exports = {
     // idx: new model(''), //indexs
-    article: new model('a', ["category_name", "status", "title"], true), //article
+    article: new model('a', ["category_id", "status", "title"], true), //article
     category: new model('c'),
     user: new model('u'),
     link: new model('l'),

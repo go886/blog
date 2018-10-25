@@ -68,13 +68,16 @@ export default {
   /* margin: 0px 50px 50px 80px; */
   /* padding: 0px 50px 50px 80px; */
   /* background-color: #666; */
+  word-wrap: break-word;
 }
 .markdown >>> .hljs {
   margin: 15px 0;
   border-radius: 8px;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
-  max-width: 850px;
-  /* max-width: 800px; */
+  /* max-width: 630px; */
+  display: flex;
+  flex-direction: column;
+  /* max-width: 650px; */
 }
 
 /* .markdown >>> .post-img {

@@ -51,7 +51,7 @@ export default {
   position: relative;
   left: 0;
   top: 0;
-  padding: 50px;
+  /* padding: 50px; */
   /* padding: 30px 100px 100px 100px; */
 }
 .header {

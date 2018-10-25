@@ -2,9 +2,12 @@
   <div id="app">
       <Header class='header'/>
       <div class="container">
+        <div  class="left">
         <transition name="fade" mode="out-in">
           <router-view></router-view>
         </transition>
+                </div>
+
         <Sider />
       </div>
       <Footer class='footer'/>
@@ -57,7 +60,20 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  max-width: 70%;
+  /* max-width: 70%; */
+  /* width: 860px;
+  min-width: 300px;
+  max-width: 860px; */
+  /* background-color: antiquewhite; */
+}
+
+.left {
+  padding: 30px 18px 30px 18px;
+  width: 660px;
+  max-width: 660px;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
 }
 
 .footer {

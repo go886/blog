@@ -58,6 +58,7 @@ export default {
   display: flex;
   flex-direction: row;
   border-left: 1px solid #eaecef;
+  justify-self: flex-end
 }
 .pannel {
   /* background-color: blue; */

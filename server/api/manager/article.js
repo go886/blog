@@ -14,7 +14,6 @@ module.exports = {
             return { error: "无效的分类" }
         }
         post.category_id = cate.id
-        post.category_name = cate.name
         post.status = 0
         const id = await mgr.add(post)
         return { id }
@@ -38,11 +37,19 @@ module.exports = {
         const pageSize = parseInt(ctx.query.pageSize || 10)
         const page = parseInt(ctx.query.page || 1)
 
+        let category_id = null
+        if (ctx.query.cate) {
+            const cate = await category.findOne({ name: ctx.query.cate })
+            category_id = (cate||{}).id
+        }
+
         const query = {
             status: ctx.query.status,
-            category_name: ctx.query.cate,
+            category_id,
             tag: ctx.query.tag,
         }
+
+        
 
         const r = await mgr.search({ page, limit: pageSize, query })
         if (r.list && r.list.length > 0) {

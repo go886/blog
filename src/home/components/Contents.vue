@@ -112,10 +112,12 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .root {
-  max-width: 75%;
-  padding: 30px;
+  flex: 1;
+  /* max-width: 75%; */
+  /* padding: 30px; */
   display: flex;
   flex-direction: column;
+  /* background-color: beige; */
 }
 .post {
   display: flex;

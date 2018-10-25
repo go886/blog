@@ -8,7 +8,7 @@ module.exports = {
     },
     async get(ctx) {
         return await mgr.get('syssetting') || {
-            name: '我的博客',
+            name: 'lege2005 blog',
             title: 'hello 2018',
             desc: 'c++/java ',
             keywords: '互联网|区块连',
