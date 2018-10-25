@@ -1,9 +1,46 @@
+// const Datastore = require('nedb')
+
+// function test() {
+//     const db = new Datastore({
+//         filename: './mydb2',
+//         autoload: true,
+//         timestampData:true,
+//     });
+
+//     // for (var i =0;i<10; ++i) {
+//     //     db.insert({
+//     //         _id:i,
+//     //         id:i,
+//     //         title:'abc',
+//     //         name:'abc'
+//     //     },(err, doc)=>{
+    
+//     //     });
+//     // }
+
+//     // db.remove({_id:1},()=>{})
+//     db.find({title:'abc'}).sort({_id:1}).exec((err,docs)=>{
+//         console.log(docs)
+//     })
+   
+// }
+
+// test()
+
+
+
+
+
+
+
 const level = require('level')
 const Hashids = require('hashids');
 const hashids = new Hashids('xiami.com', 0, 'abcdefghijklmnopqrstuvwxyz');
 const db = level('./mydb', { valueEncoding: "json" })
 const INIT_INDEX = 1000000000000;
+const MAX_LIMIT = 1000;
 const SEP = '.'
+const INDEX_SEP = ':'
 const SEP_NEXT = String.fromCharCode(SEP[0].charCodeAt() + 1)
 
 
@@ -29,49 +66,21 @@ model.prototype = {
     decode(id) {
         return this.usekey ? hashids.decode(id) : id;
     },
-    async buildIndexing(o) {
-        if (this.props) {
-            for (let i = 0; i < this.props.length; ++i) {
-                var k = this.props[i]
-                k = Array.isArray(k) ? k : [k]
-                let v = {}
-                k.forEach((key) => {
-                    v[key] = o[key]
-                });
-
-                let keys = []
-                Object.keys(v).sort().forEach(key => {
-                    keys.push([key, v[key]].join(':'))
-                });
-
-                var prefixe_name = [SEP + this.name, keys.join(SEP_NEXT), o.id].join(SEP)
-                await db.put(prefixe_name, { value: o.id })
+    async indexingForKey(k, o, remove = false) {
+        if (this.props.indexOf(k) > -1) {
+            const v = o[k]
+            if (v) {
+                var prefixe_name = [SEP + this.name, [k, v].join(INDEX_SEP), o.id].join(SEP)
+                remove ? await db.del(prefixe_name) : await db.put(prefixe_name, { value: o.id })
             }
         }
     },
-    async removeIndexing(o) {
+    async indexing(o, remove = false) {
         if (this.props) {
             for (let i = 0; i < this.props.length; ++i) {
-                var k = this.props[i]
-                k = Array.isArray(k) ? k : [k]
-                let v = {}
-                k.forEach((key) => {
-                    v[key] = o[key]
-                });
-
-                let keys = []
-                Object.keys(v).sort().forEach(key => {
-                    keys.push([key, v[key]].join(':'))
-                });
-
-                var prefixe_name = [SEP + this.name, keys.join(SEP_NEXT), o.id].join(SEP)
-                await db.del(prefixe_name)
+                await this.indexingForKey(this.props[i], o, remove)
             }
         }
-    },
-    async rebuildIndexing(o) {
-        await this.removeIndexing(o)
-        await this.buildIndexing(o)
     },
     async add(o) {
         if (!o.id) {
@@ -86,16 +95,15 @@ model.prototype = {
         }
         o.add_time = (new Date).getTime()
         o.edit_time = o.add_time
-        // o.id = o.add_time
         if (this.usekey) o._k = this.encode(o.id)
 
-        await this.buildIndexing(o)
+        await this.indexing(o)
         return (await (db.put(this.key(o.id), o))) ? null : o.id
     },
     async remove(id) {
         if (this.props) {
             const item = await this.get(id)
-            await this.removeIndexing(item)
+            await this.indexing(item, true)
         }
         return (await db.del(this.key(this.decode(id))) ? null : id)
     },
@@ -103,19 +111,17 @@ model.prototype = {
         if (o.id) {
             let item = await this.get(o.id)
             if (item) {
-                await this.removeIndexing(item);
                 o && Object.keys(o).forEach(k => {
                     if (['id', '_k', 'add_time', 'edit_time'].indexOf(k) == -1) {
+                        this.indexingForKey(k, item)
                         item[k] = o[k]
+                        this.indexingForKey(k, item)
                     }
                 });
 
                 item.edit_time = (new Date).getTime()
-                await this.buildIndexing(item);
                 return (await (db.put(this.key(item.id), item))) ? null : item.id
-
             }
-
         }
     },
     async get(id) {
@@ -126,21 +132,14 @@ model.prototype = {
         }
     },
     async next(id, op = {}) {
-        op.cursor = id;
-        op.equalself = false
-        op.next = true
+        op.cursor = id
         if (!op.limit) op.limit = 1;
-        const list = await this.query(op)
-        return list.length > 0 ? list[0] : null
+        const r = await this.search(op)
+        return r.list.length > 0 ? r.list[0] : null
     },
     async prev(id, op = {}) {
-        op.cursor = id;
-        op.equalself = false
-        op.next = false
-        if (!op.limit) op.limit = 1;
-
-        const list = await this.query(op)
-        return list.length > 0 ? list[0] : null
+        op.des = !op.des
+        return await this.next(id, op)
     },
     async first(op = {}) {
         return await this.next(null, op)
@@ -150,15 +149,15 @@ model.prototype = {
         return await this.first(op)
     },
     async count(op = {}) {
-        op.onlykey = true
-        const list = await this.query(op)
-        return list.length
+        op.values = false
+        const r = await this.search(op)
+        return r.list.length
     },
     async find(key, value) {
-        const list = await this.query();
-        if (list) {
-            for (var i = 0; i < list.length; ++i) {
-                const item = list[i]
+        const r = await this.search();
+        if (r.list.length > 0) {
+            for (var i = 0; i < r.list.length; ++i) {
+                const item = r.list[i]
                 if (item[key] == value) {
                     return item;
                 }
@@ -166,109 +165,103 @@ model.prototype = {
         }
     },
 
+
     /**
+     * 
+     * @param {
      * {
-     * limit:20,
-     * page:0,
-     * pageSize:10,
-     * cursor,
-     * next:true
-     * des
-     * onlykey
-     * equalself:true
-     * query:[
-     * {status:0}
-     * {category_name:'net'}
-     * ]
-     * }
-     * @param {Object} op 
-     */
-    async _query(op = {}) {
-        let prefixe_name = this.name
-        if (op.query && Object.keys(op.query).length > 0) {
-            var keys = []
-            Object.keys(op.query).sort().forEach(k => {
-                keys.push([k, op.query[k]].join(':'))
-            });
-            prefixe_name = [SEP + this.name, keys.join(SEP_NEXT)].join(SEP)
-        }
-
-        const prefix = prefixe_name + SEP;
-        const prefix_end = prefixe_name + SEP_NEXT;
-        let options = {
-            limit: (op.limit || 100000),
-            reverse: (op.des == true),
-            start: prefix,
-            end: prefix_end,
-            values: !(op.onlykey == true)
-        }
-        if (options.reverse == true) {
-            options.start = prefix_end
-            options.end = prefix
-        }
-        if (op.page) { //page size 模式
-            options.limit = null;
-
-        } else if (op.cursor) {
-            const cursor = this.key(this.decode(op.cursor))
-            const next = (op.next !== false) && (options.reverse !== true)
-            const equal = (op.equalself !== false)
-            if (next) {
-                equal ? options.gte = cursor : options.gt = cursor;
-            } else {
-                equal ? options.lte = cursor : options.lt = cursor
+            page: 0,  //分页模式
+            cursor: null, //游标模式
+            limit: 10, // 当为分页模式时，则== pagesize
+            des:false, //是否倒序
+            values:true, //包含value
+            query:{      //查询 目前仅支持 & 操作
+                status:0,
+                category_name:'net'
             }
         }
-        return new Promise((resolve, reject) => {
-            let list = []
-            let i = 0;
-            const begin = (parseInt(op.page) - 1) * parseInt(op.pageSize || 10)
-            const end = (parseInt(op.page)) * parseInt(op.pageSize || 10)
-            db.createReadStream(options)
-                .on('data', (data) => {
-                    ++i;
-
-                    let isvalid = true;
-                    if (op.page) {
-                        isvalid = ((i > begin && i <= end))
-                    }
-
-                    if (isvalid) {
-                        if (options.values == false) {
-                            list.push(data)
-                        } else {
-                            let item = data.value
-                            if (item) {
-                                list.push(item)
-                            }
+     */
+    async search(op = {}) {
+        const searchimp = async (options, isIndexing = false, indexs = null) => {
+            return new Promise((resolve, reject) => {
+                let list = []
+                db.createReadStream(options)
+                    .on('data', (data) => {
+                        const key = data.substr(data.lastIndexOf(SEP) + 1);
+                        if (!indexs || indexs.indexOf(key) > -1) {
+                            list.push(key)
                         }
-                    }
-                })
-                .on('error', function (err) {
-                    reject(err)
-                })
-                .on('close', function () {
-                })
-                .on('end', function () {
-                    resolve(list)
-                });
-        });
-    },
+                    })
+                    .on('error', function (err) {
+                        reject(err)
+                    })
+                    .on('close', function () {
+                    })
+                    .on('end', function () {
+                        resolve(list)
+                    });
+            });
+        }
 
-    async query(op = {}) {
-        let result = await this._query(op)
-        if (op.query && !op.onlykey && Object.keys(op.query).length > 0) {
-            let list = []
-            for (var i = 0; i < result.length; ++i) {
-                let item = await db.get(this.key((result[i] || {}).value))
-                if (item) {
-                    list.push(item)
+        let indexs = []
+        if (op.query && Object.keys(op.query).length > 0) {
+            Object.keys(op.query).forEach(k => {
+                if (op.query[k]) {
+                    indexs.push([SEP + this.name, [k, op.query[k]].join(INDEX_SEP)].join(SEP))
+                }
+            });
+        }
+
+        if (indexs.length <= 0) {
+            indexs.push(this.name)
+        }
+
+        let idx = null
+        for (var k = 0; k < indexs.length; ++k) {
+            const prefix = indexs[k] + SEP;
+            const prefix_end = indexs[k] + SEP_NEXT;
+            let options = {
+                limit: (parseInt(op.limit) || MAX_LIMIT),
+                reverse: (op.des == true),
+                start: prefix,
+                end: prefix_end,
+                values: false,
+            }
+            if (options.reverse == true) {
+                options.start = prefix_end
+                options.end = prefix
+            }
+
+            if (op.cursor) {
+                const cursor = this.key(this.decode(op.cursor))
+                options.reverse == true ? options.lt = cursor : options.gt = cursor;
+            } else {
+                options.limit = MAX_LIMIT;
+            }
+            idx = await searchimp(options, true, idx)
+        }
+
+        const total = idx.length;
+        const size = parseInt(op.limit) || MAX_LIMIT;
+        const page = (parseInt(op.page) || 1) - 1
+        const begin = (page < 0 ? 0 : page) * size;
+        const end = begin + size > total ? total : begin + size;
+        var list = []
+        if (begin < total) {
+            if (op.values == false) {
+                list = idx.slice(begin, end)
+            } else {
+                let i = begin;
+                while (i < end) {
+                    const item = await db.get(this.key(idx[i++]))
+                    if (item) list.push(item)
                 }
             }
-            return list;
         }
-        return result;
+        return { total, list, page }
     },
+
+
 
     async view() {
         return new Promise((resolve, reject) => {
@@ -291,7 +284,7 @@ model.prototype = {
 }
 module.exports = {
     // idx: new model(''), //indexs
-    article: new model('a', ["category_name", "status", ["category_name", "status"]], true), //article
+    article: new model('a', ["category_name", "status", "title"], true), //article
     category: new model('c'),
     user: new model('u'),
     link: new model('l'),

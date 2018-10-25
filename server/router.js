@@ -34,9 +34,13 @@ const r = [
       '/get',
       '/query',
       '/view',
-      '/firtst',
+      '/first',
       '/last',
+      '/next',
+      '/prev',
+      '/count',
       '/publish',
+      '/search',
     ]
   },
   {
@@ -99,7 +103,7 @@ r.forEach(v => {
       r.all(path, async ctx => {
         var result = await o.target[path.substr(1)].call(o.target, ctx)
         ctx.response.type = 'json'
-        ctx.response.body = result
+        ctx.response.body = result||{}
       });
     })
     router.use(r.routes())

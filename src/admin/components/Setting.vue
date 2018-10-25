@@ -22,6 +22,15 @@
        <el-form-item label="统计代码" prop="tracker">
          <el-input type="textarea" v-model="setting.tracker" :rows="5" ></el-input>
       </el-form-item>
+      <el-form-item label="广告插件" prop="plugin_ad">
+         <el-input type="textarea" v-model="setting.plugin_ad" :rows="5" ></el-input>
+      </el-form-item>
+      <el-form-item label="社会化分享插件" prop="plugin_share">
+         <el-input type="textarea" v-model="setting.plugin_share" :rows="5" ></el-input>
+      </el-form-item>
+      <el-form-item label="评论插件" prop="plugin_comment">
+         <el-input type="textarea" v-model="setting.plugin_comment" :rows="5" ></el-input>
+      </el-form-item>
       <el-form-item label="评论" prop="comment">
         <el-switch v-model="setting.comment"></el-switch>
       </el-form-item>

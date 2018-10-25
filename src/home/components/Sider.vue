@@ -32,13 +32,13 @@ export default {
     load() {
       this.$http("/api/cate/query").then(res => {
         if (!res.error) {
-          this.cates = res;
+          this.cates = res.list;
         }
       });
 
       this.$http("/api/link/query").then(res => {
         if (!res.error) {
-          this.links = res;
+          this.links = res.list;
         }
       });
     }

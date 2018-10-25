@@ -18,6 +18,6 @@ module.exports = {
         return await mgr.get(ctx.query.id)
     },
     async query(ctx) {
-        return await mgr.query()
+        return await mgr.search()
     },
 }

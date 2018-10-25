@@ -85,7 +85,7 @@ export default {
     loadcategorys() {
       this.$http("/api/mgr/cate/query").then(res => {
         if (!res.error) {
-          this.categorys = res;
+          this.categorys = res.list;
         }
       });
     },

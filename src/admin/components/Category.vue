@@ -102,7 +102,7 @@ export default {
     load() {
       this.$http("/api/mgr/cate/query")
         .then(res => {
-          if (!res.error) this.cates = res;
+          if (!res.error) this.cates = res.list;
         })
     },
     onadd() {

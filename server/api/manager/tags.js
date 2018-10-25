@@ -17,6 +17,6 @@ module.exports = {
         return await mgr.get(ctx.query.id)
     },
     async query(ctx) {
-        return await mgr.query({ limit: ctx.query.cursor, des: true })
+        // return await mgr.query({ limit: ctx.query.cursor, des: true })
     },
 }

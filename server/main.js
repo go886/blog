@@ -52,7 +52,12 @@ app.use(async (ctx, next) => {
   if (ctx.method == 'POST' && ctx.querystring == "" && ctx.request.body && ctx.request.body.params) {
     ctx.query = ctx.request.body.params
   }
-  return await next()
+  try {
+    return await next()
+
+  } catch (error) {
+    console.log(error.stack)
+  }
 });
 app
   .use(router.routes())
