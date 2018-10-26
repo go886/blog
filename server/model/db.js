@@ -1,81 +1,8 @@
-const level = require('level')
-const Hashids = require('hashids');
-const hashids = new Hashids('xiami.com', 0, 'abcdefghijklmnopqrstuvwxyz');
-const db = level('./mydb.lv', { valueEncoding: "json" })
-const INIT_INDEX = 1000000000000;
-const MAX_LIMIT = 1000;
-const SEP = '.'
-const INDEX_SEP = ':'
-const SEP_NEXT = String.fromCharCode(SEP[0].charCodeAt() + 1)
+const db = {
 
-const start = 'c.'
-const end = 'c' + SEP_NEXT
-const op = {
-    keys: true,
-    values: true,
-    reverse: false,
-    limit: -1,
-    start: start,
-    end: end,
-    gte: 'c.1000000000002'
-}
-function iterator(op, cb) {
-    if (op.keys == false && op.keys == op.values) {
-        console.error('keys & values are false')
-    }
-
-    if (op.reverse == true) {
-        let tmp = op.start
-        op.start = op.end
-        op.end = tmp
-
-        tmp = op.gte
-        op.gte = op.lte
-        op.lte = tmp
-
-        tmp = op.gt
-        op.gt = op.le
-        op.le = tmp
-    }
-
-    const it = db.iterator(op)
-    const next = (err, key, value) => {
-        if (err || !key) {
-            it.end(() => {
-            });
-            if (err) console.error(err);
-            cb(null, value);
-        } else {
-            if (cb(key, value) == false) {
-                it.end(() => {
-                });
-                cb(null, null);
-            } else {
-                it.next(next);
-            }
-        }
-    }
-    it.next(next)
 }
 
-iterator(op, (key, value) => {
-    if (key) {
-        console.log(`key:${key} value:${value}`)
-    } else {
-        console.log('end....')
-    }
-})
-
-
-function model(name, props = null, usekey = false) {
-    this.name = name
-    this.id = INIT_INDEX;
-    this.props = props;
-    this.usekey = usekey;
-    return this;
-}
-
-model.prototype = {
+db.prototype = {
     key(id) {
         return [this.name, id].join(SEP)
     },
@@ -346,13 +273,4 @@ model.prototype = {
                 });
         });
     }
-}
-module.exports = {
-    // idx: new model(''), //indexs
-    article: new model('a', ["category_id", "status", "title"], true), //article
-    category: new model('c'),
-    user: new model('u'),
-    link: new model('l'),
-    tag: new model('t'),
-    setting: new model('s'),
 }
