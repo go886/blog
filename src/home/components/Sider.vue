@@ -53,6 +53,10 @@ export default {
   display: flex;
   flex-direction: row;
   border-left: 1px solid #eaecef;
+  white-space:nowrap;
+    word-wrap:nowrap;
+    overflow: hidden;
+
   /* justify-self: flex-end; */
 }
 .pannel {

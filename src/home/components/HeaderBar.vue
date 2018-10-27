@@ -74,19 +74,30 @@ export default {
   /* height: 40px; */
   display: flex;
   flex-direction: row;
-  /* justify-content: center; */
+  justify-content: center;
   align-items: center;
 }
 .content {
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  /* justify-content: center; */
   align-items: center;
   /* margin-right: 200px; */
   align-self: stretch;
   align-items: stretch;
   /* background-color: hsla(0, 0%, 100%, 0.65); */
   padding-left: 30px;
+  width: 75%;
+}
+@media screen and (max-width: 1199px) {
+  .content {
+    flex: 1;
+    padding-left: 0px;
+    justify-content: center;
+  }
+  .root {
+    justify-content: center;
+  }
 }
 .item {
   display: flex;

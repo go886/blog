@@ -96,16 +96,29 @@ export default {
   max-width: 65%;
 }
 
-@media screen and (max-width: 600px) {
-  .left {
-    max-width: 100%;
-  }
-}
-
 .sider {
   flex-basis: 10%;
   max-width: 320px;
 }
+
+@media screen and (max-width: 1199px) {
+  .left {
+    max-width: 80%;
+  }
+}
+
+@media (max-width: 767px){
+  .sider {
+    max-width: 0px;
+  }
+  .left {
+    max-width: 90%;
+  }
+  .headerbg {
+    height: 220px;
+  }
+}
+
 .footer {
   display: flex;
   flex-direction: row;
