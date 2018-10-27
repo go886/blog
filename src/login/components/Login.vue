@@ -1,30 +1,31 @@
 <template>
-  <div class="root">
-      <div class='content'>
-          <div class='pannel'>
-            <div class='txt'> 用户名：</div>
-            <el-input 
-                placeholder="请输入用户名"
-                v-model="name"
-                size="small"
-                clearable>
-            </el-input>
-          </div>
-          <div class='pannel'>
-            <div class='txt'> 密码：</div>
-            <el-input 
-                placeholder="请输入用密码"
-                v-model="pwd"
-                type='password'
-                size="small"
-                clearable>
-            </el-input>
-          </div>
-          <div class='loginpannel'>
-                <el-button type="primary" @click="onlogin">登录</el-button>
-          </div>
-      </div>
-  </div>
+<el-form ref="form" :model="form" :rules="rules" label-width="80px" class="content">
+    <el-form-item label="用户名：" prop="name">
+      <el-input 
+          v-model="form.name" 
+          autofocus
+          placeholder="请输入用户名"
+          @keyup.enter.native="onlogin"
+      />
+  </el-form-item>
+      <el-form-item label="密码：" prop="pwd">
+     <el-input 
+        v-model="form.pwd"                 
+        type='password'
+        placeholder="请输入密码"
+        @keyup.enter.native="onlogin"
+     />
+  </el-form-item>
+  <el-form-item label="记住我" prop="remember">
+    <el-checkbox 
+        v-model="form.remember"                 
+    />
+  </el-form-item>
+   <el-form-item>
+       <el-button type="primary" @click="onlogin">登录</el-button>
+  </el-form-item>
+</el-form>
+
 </template>
 
 <script>
@@ -33,19 +34,31 @@ const md5 = require("md5");
 export default {
   data() {
     return {
-      name: "",
-      pwd: ""
+      form: {
+        remember:true,
+      },
+      rules: {
+        name: [{ required: true, message: "请输入用户名", trigger: "blur" }],
+        pwd: [{ required: true, message: "请输入密码", trigger: "blur" }]
+      }
     };
   },
   methods: {
     onlogin() {
-      this.$http("/api/mgr/user/login", {
-        params: { name: this.name, pwd: md5(this.pwd) }
-      }).then(res => {
-        if (!res.error) {
-          // this.$message({ message: JSON.stringify(res.data) });
-          location.href ='/admin.html'
-        }
+      this.$refs["form"].validate(valid => {
+        if (!valid) return;
+
+        this.$http("/api/mgr/user/login", {
+          params: {
+            name: this.form.name,
+            pwd: md5(this.form.pwd),
+            remember: this.form.remember ? 1 : 0,
+          }
+        }).then(res => {
+          if (!res.error) {
+            location.href = "/admin.html";
+          }
+        });
       });
     }
   }
@@ -54,24 +67,14 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.root {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex: 1;
-}
 .content {
-  padding: 40px;
-  margin-bottom: 260px;
-  /* padding-bottom: 300px; */
+  padding: 40px 40px 10px 40px;
   display: flex;
   flex-direction: column;
-  width: 360;
-  min-width: 360px;
-  max-width: 360px;
-
+  width: 400px;
   background-color: rgba(240, 255, 255, 0.5);
   border-radius: 10px;
+  margin-bottom: 100px;
 }
 .pannel {
   display: flex;

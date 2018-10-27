@@ -19,8 +19,8 @@ export default {
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  margin-left: 100px;
-  margin-right: 100px;
+  /* margin-left: 100px;
+  margin-right: 100px; */
   min-width: 40%;
   border-top: 1px solid #efeaea;
   color: #333;

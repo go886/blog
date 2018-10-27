@@ -46,7 +46,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="read_num"
+          prop="pv"
           label="Pv"
           width="80">
         </el-table-column>
@@ -175,7 +175,7 @@ export default {
       }).then(() => {
         this.$http("/api/mgr/article/remove", {
           params: {
-            id: post._k
+            id: post.id
           }
         }).then(res => {
           if (!res.error) {
@@ -189,7 +189,7 @@ export default {
       const publish = post.status == 0;
       this.$http("/api/mgr/article/publish", {
         params: {
-          id: post._k,
+          id: post.id,
           publish
         }
       }).then(res => {

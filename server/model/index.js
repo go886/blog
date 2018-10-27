@@ -1,70 +1,12 @@
 const level = require('level')
 const Hashids = require('hashids');
 const hashids = new Hashids('xiami.com', 0, 'abcdefghijklmnopqrstuvwxyz');
-const db = level('./mydb.lv', { valueEncoding: "json" })
+const db = level('./mydb', { valueEncoding: "json" })
 const INIT_INDEX = 1000000000000;
 const MAX_LIMIT = 1000;
 const SEP = '.'
 const INDEX_SEP = ':'
 const SEP_NEXT = String.fromCharCode(SEP[0].charCodeAt() + 1)
-
-const start = 'c.'
-const end = 'c' + SEP_NEXT
-const op = {
-    keys: true,
-    values: true,
-    reverse: false,
-    limit: -1,
-    start: start,
-    end: end,
-    gte: 'c.1000000000002'
-}
-function iterator(op, cb) {
-    if (op.keys == false && op.keys == op.values) {
-        console.error('keys & values are false')
-    }
-
-    if (op.reverse == true) {
-        let tmp = op.start
-        op.start = op.end
-        op.end = tmp
-
-        tmp = op.gte
-        op.gte = op.lte
-        op.lte = tmp
-
-        tmp = op.gt
-        op.gt = op.le
-        op.le = tmp
-    }
-
-    const it = db.iterator(op)
-    const next = (err, key, value) => {
-        if (err || !key) {
-            it.end(() => {
-            });
-            if (err) console.error(err);
-            cb(null, value);
-        } else {
-            if (cb(key, value) == false) {
-                it.end(() => {
-                });
-                cb(null, null);
-            } else {
-                it.next(next);
-            }
-        }
-    }
-    it.next(next)
-}
-
-iterator(op, (key, value) => {
-    if (key) {
-        console.log(`key:${key} value:${value}`)
-    } else {
-        console.log('end....')
-    }
-})
 
 
 function model(name, props = null, usekey = false) {
@@ -88,8 +30,47 @@ model.prototype = {
     decode(id) {
         return this.usekey ? hashids.decode(id) : id;
     },
+    iterator(op, cb) {
+        op = op || {}
+        if (op.keys == false && op.keys == op.values) {
+            console.error('keys & values are false')
+        }
+
+        if (op.reverse == true) {
+            let tmp = op.start
+            op.start = op.end
+            op.end = tmp
+
+            tmp = op.gte
+            op.gte = op.lte
+            op.lte = tmp
+
+            tmp = op.gt
+            op.gt = op.lt
+            op.lt = tmp
+        }
+
+        const it = db.iterator(op)
+        const next = (err, key, value) => {
+            if (err || !key) {
+                it.end(() => {
+                });
+                if (err) console.error(err);
+                cb(null, value);
+            } else {
+                if (cb(key, value) == false) {
+                    it.end(() => {
+                    });
+                    cb(null, null);
+                } else {
+                    it.next(next);
+                }
+            }
+        }
+        it.next(next)
+    },
     async indexingForKey(k, o, remove = false) {
-        if (this.props.indexOf(k) > -1) {
+        if (this.props && this.props.indexOf(k) > -1) {
             const v = o[k]
             if (v) {
                 var prefixe_name = [SEP + this.name, [k, v].join(INDEX_SEP), o.id].join(SEP)
@@ -127,7 +108,7 @@ model.prototype = {
             const item = await this.get(id)
             await this.indexing(item, true)
         }
-        return (await db.del(this.key(this.decode(id))) ? null : id)
+        return (await db.del(this.key(id)) ? null : id)
     },
     async update(o) {
         if (o.id) {
@@ -135,7 +116,7 @@ model.prototype = {
             if (item) {
                 o && Object.keys(o).forEach(k => {
                     if (['id', '_k', 'add_time', 'edit_time'].indexOf(k) == -1) {
-                        this.indexingForKey(k, item)
+                        this.indexingForKey(k, item, true)
                         item[k] = o[k]
                         this.indexingForKey(k, item)
                     }
@@ -143,12 +124,12 @@ model.prototype = {
 
                 item.edit_time = (new Date).getTime()
                 return (await (db.put(this.key(item.id), item))) ? null : item.id
-            }
+            } 
         }
     },
     async get(id) {
         try {
-            return await db.get(this.key(this.decode(id)))
+            return await db.get(this.key(id))
         } catch (error) {
             return null;
         }
@@ -179,6 +160,7 @@ model.prototype = {
         const list = await this.find(query, 1);
         return list.length > 0 ? list[0] : null
     },
+
     async find(query, limit = MAX_LIMIT) {
         const prefix = this.name + SEP;
         const prefix_end = this.name + SEP_NEXT;
@@ -192,32 +174,27 @@ model.prototype = {
         const keys = Object.keys(query)
         return new Promise((resolve, reject) => {
             let list = []
-            db.createReadStream(options)
-                .on('data', (data) => {
+            this.iterator(options, (key, value) => {
+                if (key) {
                     if (list.length < limit) {
-                        var v = data.value;
                         var bfind = true;
                         for (var i = 0; i < keys.length; ++i) {
-                            if (query[keys[i]] !== v[keys[i]]) {
+                            if (query[keys[i]] !== value[keys[i]]) {
                                 bfind = false;
                                 break;
                             }
                         }
 
                         if (bfind) {
-                            list.push(v)
-
+                            list.push(value)
                         }
                     }
-                })
-                .on('error', function (err) {
-                    reject(err)
-                })
-                .on('close', function () {
-                })
-                .on('end', function () {
+
+                    return list.length < limit;
+                } else {
                     resolve(list)
-                });
+                }
+            })
         });
     },
     /**
@@ -239,21 +216,16 @@ model.prototype = {
         const searchimp = async (options, isIndexing = false, indexs = null) => {
             return new Promise((resolve, reject) => {
                 let list = []
-                db.createReadStream(options)
-                    .on('data', (data) => {
-                        const key = data.substr(data.lastIndexOf(SEP) + 1);
+                this.iterator(options, (key, value) => {
+                    if (key) {
+                        key = key.substr(key.lastIndexOf(SEP) + 1);
                         if (!indexs || indexs.indexOf(key) > -1) {
                             list.push(key)
                         }
-                    })
-                    .on('error', function (err) {
-                        reject(err)
-                    })
-                    .on('close', function () {
-                    })
-                    .on('end', function () {
+                    } else {
                         resolve(list)
-                    });
+                    }
+                });
             });
         }
 
@@ -285,14 +257,10 @@ model.prototype = {
                 end: prefix_end,
                 values: false,
             }
-            if (options.reverse == true) {
-                options.start = prefix_end
-                options.end = prefix
-            }
 
             if (op.cursor) {
-                const cursor = this.key(this.decode(op.cursor))
-                options.reverse == true ? options.lt = cursor : options.gt = cursor;
+                const cursor = [indexs[k], op.cursor].join(SEP)
+                options.gt = cursor;
             } else {
                 options.limit = MAX_LIMIT;
             }
@@ -320,30 +288,15 @@ model.prototype = {
     },
 
     async view() {
-
-
-
-
-
-        // for (var itor = db.iterator(); !itor.end(); itor.next()) {
-        //     console.log('a')
-        // }
-
         return new Promise((resolve, reject) => {
             var list = []
-            db.createReadStream()
-                .on('data', (data) => {
-                    data.value = data.value
-                    list.push(data)
-                })
-                .on('error', function (err) {
-                    reject(err)
-                })
-                .on('close', function () {
-                })
-                .on('end', function () {
+            this.iterator(null, (key, value) => {
+                if (key) {
+                    list.push({ key, value })
+                } else {
                     resolve({ list })
-                });
+                }
+            })
         });
     }
 }
@@ -355,4 +308,5 @@ module.exports = {
     link: new model('l'),
     tag: new model('t'),
     setting: new model('s'),
+    pv: new model('p'),
 }

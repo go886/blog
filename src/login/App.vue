@@ -36,34 +36,8 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-}
-.header {
-  height: 60px;
-  line-height: 60px;
-  background: #20a0ff;
-}
-.content {
-  /* display: flex;
-  position: absolute; */
-  /* top: 60px;
-  bottom: 0px; */
-  flex: 1;
-  display: flex;
-  /* background: yellowgreen; */
-}
-.footer {
-  height: 45px;
-  line-height: 45px;
-  background: gray;
-}
-.contentleft {
-  /* background-color: blue; */
-  flex: 1;
-  padding: 20px;
-  display: flex;
-}
-.side {
-  /* background-color: red; */
-  width: 300px;
+  background-color: #545c64;
+  justify-content: center;
+  align-items: center;
 }
 </style>

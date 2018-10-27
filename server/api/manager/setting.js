@@ -3,7 +3,7 @@ module.exports = {
     async update(ctx) {
         let setting = JSON.parse(JSON.stringify(ctx.query))
         setting.id = 'syssetting'
-        let id = await mgr.update(setting)
+        let id = await mgr.add(setting)
         return { id }
     },
     async get(ctx) {

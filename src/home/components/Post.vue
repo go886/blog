@@ -1,8 +1,12 @@
 <template>
-  <div class="root">
+  <div class="root" v-if="post">
       <PostHeader :post="post" />
       <img class="cover" :src="post.cover" />
       <MarkDown :value="post.content"/>
+      <div class="bottom">
+        <div v-if="prev" class="prev">【上一篇】 <router-link :to="postURL(prev)">{{prev.title}}</router-link></div>
+        <div v-if="next" class="prev">【下一篇】 <router-link :to="postURL(next)">{{next.title}}</router-link></div>
+      </div>
   </div>
 </template>
 
@@ -17,18 +21,24 @@ export default {
   },
   data() {
     return {
-      post: {}
+      post: null
     };
   },
+  watch: {
+    $route() {
+      this.load();
+    }
+  },
+  computed: {},
   created() {
     this.load();
   },
   methods: {
+    postURL(post) {
+      return this.$store.postURL(post);
+    },
     gmtDateFormatter(time) {
       return moment(time).format("YYYY/MM/DD");
-    },
-    markDownToHtml(txt) {
-      return md.render(txt);
     },
     load() {
       this.$http("/api/article/get", {
@@ -37,7 +47,11 @@ export default {
         }
       }).then(res => {
         if (!res.error) {
-          this.post = res;
+          this.post = res.post;
+          this.next = res.next;
+          this.prev = res.prev;
+        } else {
+          location.href = "/";
         }
       });
     }
@@ -88,7 +102,12 @@ export default {
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
   align-self: flex-start;
 }
-</style>
 
-<style>
+.bottom {
+  margin-top: 50px;
+  border-top: 1px solid #eaecef;
+}
+.prev {
+  margin-top: 8px;
+}
 </style>

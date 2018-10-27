@@ -4,7 +4,7 @@
     :visible.sync="visible"
     width="85%"
     :fullscreen='false' top='40px'>
-    <el-form ref="form" size="mini" label-position="right" label-width="80px" :rules="rules" :model="post" class="demo-ruleForm">
+    <el-form  ref="form" size="mini" label-position="right" label-width="80px" :rules="rules" :model="post" class="demo-ruleForm">
         <el-form-item label="标题" prop="title">
             <el-input v-model="post.title"></el-input>
         </el-form-item>
@@ -13,9 +13,18 @@
         </el-form-item>
        <el-form-item label="分类" prop="category_id">
             <el-select v-model="post.category_id" placeholder="请选择活动区域">
-            <el-option v-for="item in categorys" :label="item.title" :value="item.id" :key='item.id'></el-option>
-        </el-select>
+              <el-option v-for="item in categorys" :label="item.title" :value="item.id" :key="item.id"></el-option>
+          </el-select>
        </el-form-item>
+        <el-form-item label="类型" prop="type">
+          <el-radio-group v-model="post.type">
+            <el-radio :label="0" >原创</el-radio>
+            <el-radio :label="1" >转载</el-radio>
+          </el-radio-group>
+        </el-form-item>
+         <el-form-item v-if="post.type == 1" label="来源URL" prop="source_url">
+            <el-input v-model="post.source_url"></el-input>
+        </el-form-item>
         <el-form-item label="摘要" prop='summary'>
           <el-input type="textarea" :rows="3"  v-model="post.summary" ></el-input>
         </el-form-item>
@@ -27,7 +36,7 @@
       <el-button @click="visible = false">取 消</el-button>
       <el-button type="primary" @click="oncommit">确 定</el-button>
     </span>
-    <!-- <div>{{item}}</div> -->
+    <div>{{post}}</div>
   </el-dialog>
 </template>
 
@@ -41,7 +50,9 @@ export default {
       edit: false,
       visible: false,
       categorys: [],
-      post: {},
+      post: {
+        type: 0
+      },
       rules: {
         title: [
           { required: true, message: "请输入标题", trigger: "blur" },
@@ -52,12 +63,14 @@ export default {
         ],
         summary: [
           { required: true, message: "请输入摘要", trigger: "blur" },
-          { min: 50, message: "至少输入50个字符", trigger: "blur" }
+        //  { min: 50, message: "至少输入50个字符", trigger: "blur" }
         ],
         content: [
           { required: true, message: "请输入内容", trigger: "blur" },
-          { min: 50, message: "至少输入50个字符", trigger: "blur" }
-        ]
+        //  { min: 50, message: "至少输入50个字符", trigger: "blur" }
+        ],
+        type: [{ required: true, message: "请选择类型", trigger: "blur" }],
+        source_url: [{ required: true, message: "请输入URL", trigger: "blur" }]
       }
     };
   },
@@ -93,12 +106,14 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           const post = {
-            id: this.post._k,
+            id: this.post.id,
             title: this.post.title,
             category_id: this.post.category_id,
             cover: this.post.cover,
             content: this.post.content,
             summary: this.post.summary,
+            type: this.post.type,
+            source_url: this.post.source_url
           };
 
           const loading = this.$loading({
@@ -108,21 +123,23 @@ export default {
             background: "rgba(0, 0, 0, 0.7)"
           });
 
-          this.$http.post(
-            this.edit ? "/api/mgr/article/update" : "/api/mgr/article/add",
-            {
-              params: post
-            }
-          ).then(res => {
-            loading.close();
-            if (!res.error) {
-              this.$message({
-                message: this.edit ? "修改成功" : "新增成功"
-              });
-              this.visible = false;
-              this.finished && this.finished.call(null, res);
-            }
-          });
+          this.$http
+            .post(
+              this.edit ? "/api/mgr/article/update" : "/api/mgr/article/add",
+              {
+                params: post
+              }
+            )
+            .then(res => {
+              loading.close();
+              if (!res.error) {
+                this.$message({
+                  message: this.edit ? "修改成功" : "新增成功"
+                });
+                this.visible = false;
+                this.finished && this.finished.call(null, res);
+              }
+            });
         }
       });
     }

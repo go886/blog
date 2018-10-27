@@ -1,14 +1,17 @@
 <template>
   <div class="root">
    <div class='post' v-for="post in list" :key="post.id">
-      <PostHeader :post="post" :enabledlink="true"/>
-      <div class='content' >
-        <img v-if="post.cover" class='cover' :src="post.cover"/>
-
-        <div class='desc' v-if="post.summary">
-          <p style="text-indent: 2em;margin:0;padding:0;">{{ post.summary +'...' }}</p>
-        </div>
+     <router-link :to="postURL(post)" v-if="post.cover">
+       <img class='cover' :src="post.cover"  :title="'查看文章：' + post.title"/>
+     </router-link>
+      <div class="postcontent">
+          <PostHeader :post="post" :summary="true"/>
+          <div class='content' >
+          <!-- <div class='desc' v-if="post.summary">
+               <p style="text-indent: 2em;margin:0;padding:0;">{{ post.summary +'...' }}</p>
+          </div> -->
       </div>
+   </div>
    </div>
    <div class="pagination">
     <el-pagination v-if='list.length > 0'
@@ -32,7 +35,7 @@ export default {
   props: {},
   components: {
     PostHeader,
-    MarkDown,
+    MarkDown
   },
   data: function() {
     return {
@@ -43,13 +46,8 @@ export default {
     };
   },
   watch: {
-    $route(to, from) {
-      console.log("to:", to);
-      console.log("from:", from);
-
-      // if (to.path == from.path && to.name ='') {
+    $route() {
       this.load();
-      // }
     }
   },
   created() {
@@ -78,6 +76,9 @@ export default {
   methods: {
     gmtDateFormatter(time) {
       return moment(time).format("YYYY/MM/DD");
+    },
+    postURL(post) {
+      return this.$store.postURL(post);
     },
     load() {
       this.$http("/api/article/query", {
@@ -117,6 +118,7 @@ export default {
   /* padding: 30px; */
   display: flex;
   flex-direction: column;
+  max-width: 100%;
   /* background-color: beige; */
 }
 .post {
@@ -124,22 +126,28 @@ export default {
   flex-direction: column;
   background-color: #fff;
   margin-bottom: 20px;
-  padding: 50px;
+  /* padding: 50px; */
 
   height: auto;
   display: block;
   border-radius: 5px;
+  overflow: hidden;
+}
+.postcontent {
+  padding: 20px 50px;
 }
 .cover {
   align-self: center;
-  width: 620px;
-  max-width: 80%;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
-  margin-bottom: 20px;
-
-  height: auto;
+  max-width: 100%;
+  width: 100%;
   display: block;
-  border-radius: 5px;
+  height: auto;
+  max-height: 400px;
+
+  /* top: 50%; */
+  /* -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  -moz-transform: translateY(-50%); */
 }
 .right {
   margin-right: 20px;

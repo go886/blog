@@ -1,16 +1,30 @@
 <template>
   <div class="header">
-        <h1 class="title" v-if="enabledlink == true" >
-            <router-link :to="'/' + post.category_name + '/' +post._k">{{post.title}}</router-link>
+        <h1 class="title" v-if="summary == true" >
+            <router-link :to="postURL(post)">{{post.title}}</router-link>
         </h1>
         <h1 class="title" v-else >
             {{post.title}}
         </h1>
         <div class="toolbar">
-            <i class="el-icon-date"/>
-            <div class='tool-text'>{{gmtDateFormatter(post.add_time)}}</div>
-            <i class="el-icon-document"/>
-            <router-link :to="'/' + post.category_name" class='tool-text'>{{post.category_title}}</router-link>
+          <i class="fa fa-calendar" >
+              <span>{{gmtDateFormatter(post.add_time)}}</span>
+          </i>
+          <i class="fa fa-eye" v-if="post.pv > 0">
+              <span>{{post.pv}}</span>
+          </i>
+           <router-link :to="'/' + post.category_name">
+              <i class="fa fa-book" >
+                <span>{{post.category_title}}</span>
+              </i>
+           </router-link>
+           
+           <a v-if="post.type == 1 && summary !== true" :href="post.source_url">
+              <i  class="fa fa-map">
+                <span>查看原文</span>
+             </i>
+           </a>
+
         </div>
   </div>
 </template>
@@ -18,8 +32,11 @@
 <script>
 import moment from "moment";
 export default {
-  props: ["post", "enabledlink"],
+  props: ["post", "enabledlink", "summary"],
   methods: {
+    postURL(post) {
+      return this.$store.postURL(post);
+    },
     gmtDateFormatter(time) {
       return moment(time).format("YYYY/MM/DD");
     }
@@ -38,7 +55,7 @@ export default {
   padding-left: 5px;
   margin-bottom: 20px;
 }
-.header a{
+.header a {
   color: #333;
   text-decoration: none;
 }
@@ -46,9 +63,10 @@ export default {
   color: #ff6600;
   /* text-decoration: underline; */
 }
+
 .title {
-  font-size: 42px;
-  line-height: 42px;
+  font-size: 32px;
+  line-height: 32px;
   color: #111111;
   font-weight: 400;
   margin: 0;
@@ -59,12 +77,20 @@ export default {
   display: flex;
   flex-direction: row;
   align-items: center;
-  font-size: 11px;
+  font-size: 10px;
   color: #999;
   /* background-color: aqua; */
 }
-.tool-text {
-    margin-left: 4px;
-    margin-right: 20px;
+
+.toolbar span {
+  margin-left: 4px;
+  margin-right: 14px;
+  font-family: Georgia, Palatino, serif;
+}
+.toolbar a {
+  color: #999;
+}
+.toolbar a:hover {
+  color:#111111;
 }
 </style>

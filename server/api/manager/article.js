@@ -40,7 +40,7 @@ module.exports = {
         let category_id = null
         if (ctx.query.cate) {
             const cate = await category.findOne({ name: ctx.query.cate })
-            category_id = (cate||{}).id
+            category_id = (cate || {}).id
         }
 
         const query = {
@@ -49,13 +49,18 @@ module.exports = {
             tag: ctx.query.tag,
         }
 
-        
-
-        const r = await mgr.search({ page, limit: pageSize, query })
+        const r = await mgr.search({ page, limit: pageSize, des: true, query })
         if (r.list && r.list.length > 0) {
             for (var i = 0; i < r.list.length; ++i) {
                 var item = r.list[i]
                 var cate = await category.get(item.category_id)
+                var pvinfo = await db.pv.get(item.id)
+                if (pvinfo) {
+                    item.pv = pvinfo.pv;
+                } else {
+                    item.pv = 0;
+                }
+
                 if (cate) {
                     item.category_name = cate.name
                     item.category_title = cate.title
@@ -87,7 +92,7 @@ module.exports = {
         const status = ctx.query.publish == 'true' ? 1 : 0;
         const article = await mgr.get(id)
         if (article && article.status != status) {
-            await mgr.update({ id: article._k, status })
+            await mgr.update({ id: article.id, status })
             return { id }
         }
         return { error: 'op error' }

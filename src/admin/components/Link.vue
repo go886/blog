@@ -89,7 +89,7 @@ export default {
     },
     load() {
       this.$http("/api/mgr/link/query").then(res => {
-        if (!res.error) this.list = res;
+        if (!res.error) this.list = res.list;
       });
     },
     onadd() {

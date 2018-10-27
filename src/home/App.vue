@@ -1,36 +1,46 @@
 <template>
-  <div id="app">
-      <Header class='header'/>
+  <div id="app" v-if="data">
+      <div class="headerbg" :style="{'background-image':'url('+banner+')'}">
+      <HeaderBar />
+      </div>
       <div class="container">
-        <div  class="left">
-        <transition name="fade" mode="out-in">
-          <router-view></router-view>
-        </transition>
-                </div>
+                <Sider class="sider"/>
 
-        <Sider />
+        <div  class="left">
+          <transition name="fade" mode="out-in">
+            <router-view></router-view>
+          </transition>
+        </div>
       </div>
       <Footer class='footer'/>
   </div>
 </template>
 
 <script>
-import Header from "./components/Header";
+// import Header from "./components/Header";
+import HeaderBar from "./components/HeaderBar";
 import Sider from "./components/Sider";
 import Footer from "./components/Footer";
 
 export default {
   name: "app",
   components: {
-    Header,
+    // Header,
+    HeaderBar,
     Sider,
     Footer
   },
   data() {
     return {
-      data: {}
+      data: null
     };
   },
+  computed: {
+    banner() {
+      return this.data.setting.banner || "/header-bg.jpg";
+    }
+  },
+
   created() {
     this.$http("/api/blog/query").then(res => {
       this.data = res;
@@ -49,33 +59,53 @@ export default {
 #app {
   display: flex;
   flex: 1;
-  padding-top: 60px;
   flex-direction: column;
   background-color: #f0f2f5;
-  overflow: hidden;
   align-items: center;
+}
+.headerbg {
+  height: 325px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  -moz-background-size: 100% 100;
 }
 .container {
   flex: 1;
   display: flex;
   flex-direction: row;
   justify-content: center;
-  /* max-width: 70%; */
-  /* width: 860px;
-  min-width: 300px;
-  max-width: 860px; */
-  /* background-color: antiquewhite; */
+  /* background-color: aquamarine; */
+  align-self: stretch;
+  /* margin-left: 20px;
+  margin-right: 20px; */
 }
 
 .left {
   padding: 30px 18px 30px 18px;
-  width: 660px;
-  max-width: 660px;
-  min-width: 300px;
+  /* max-width: 660px; */
+  /* min-width: 0;
+  max-width: 80%; */
   display: flex;
   flex-direction: column;
+  background-color: beige;
+  flex-basis: 100%;
+  max-width: 65%;
 }
 
+@media screen and (max-width: 600px) {
+  .left {
+    max-width: 100%;
+  }
+}
+
+.sider {
+  flex-basis: 10%;
+  max-width: 320px;
+}
 .footer {
   display: flex;
   flex-direction: row;

@@ -19,6 +19,9 @@
       <el-form-item label="主题选择" prop="theme">
           <el-input v-model="setting.theme"></el-input>
       </el-form-item>
+      <el-form-item label="Banner" prop="banner">
+          <el-input v-model="setting.banner"></el-input>
+      </el-form-item>
        <el-form-item label="统计代码" prop="tracker">
          <el-input type="textarea" v-model="setting.tracker" :rows="5" ></el-input>
       </el-form-item>

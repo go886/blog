@@ -49,16 +49,11 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .root {
-  /* background-color: red; */
-  /* min-width: 300px;
-  max-width: 300px;
-  width: 300px; */
-  min-width: 100px;
-  /* max-width: 220px; */
+  background-color:antiquewhite;
   display: flex;
   flex-direction: row;
   border-left: 1px solid #eaecef;
-  justify-self: flex-end
+  /* justify-self: flex-end; */
 }
 .pannel {
   /* background-color: blue; */

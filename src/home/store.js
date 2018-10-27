@@ -10,18 +10,16 @@ const store = new Vuex.Store({
     mutations: {
     },
     getters: {
+    },
+    postURL(post) {
+        return `/${post.category_name}/${post._k}`
     }
 })
 
 const methods = {
-    setNameSpace(n) {
-        this.state.namespace = n;
-        VueCookies.set("oceanNameSpace", n, 100); //one day
-    },
-    nameSpaceTitle() {
-        return ['社区','微淘', '头条'][this.state.namespace]
-    }
-   
+    postURL(post) {
+        return `/${post.category_name}/${post._k}`
+    },  
 }
 
 

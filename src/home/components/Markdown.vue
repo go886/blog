@@ -21,7 +21,9 @@ const md = require("markdown-it")({
           hljs.highlight(lang, str, true).value +
           "</code></pre>"
         );
-      } catch (__) {}
+      } catch (err) {
+        err;
+      }
     }
 
     return (
