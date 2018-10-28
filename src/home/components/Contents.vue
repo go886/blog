@@ -1,7 +1,7 @@
 <template>
   <div class="root">
    <div class='post' v-for="post in list" :key="post.id">
-     <router-link :to="postURL(post)" v-if="post.cover">
+     <router-link :to="$store.postURL(post)" v-if="post.cover">
        <img class='cover' :src="post.cover"  :title="'查看文章：' + post.title"/>
      </router-link>
       <div class="postcontent">
@@ -27,7 +27,6 @@
 </template>
 
 <script>
-import moment from "moment";
 import PostHeader from "./PostHeader";
 import MarkDown from "./Markdown";
 
@@ -69,17 +68,11 @@ export default {
     //   });
   },
   computed: {
-    time() {
-      return moment().format("YYYY MMMM Do");
-    }
+   
   },
   methods: {
-    gmtDateFormatter(time) {
-      return moment(time).format("YYYY/MM/DD");
-    },
-    postURL(post) {
-      return this.$store.postURL(post);
-    },
+   
+   
     load() {
       this.$http("/api/article/query", {
         params: {

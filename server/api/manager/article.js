@@ -5,7 +5,7 @@ const category = db.category
 
 module.exports = {
     async add(ctx) {
-        let post = ctx.query
+        let post = ctx.body.query
         if (!(post.title && post.category_id && post.content && post.summary)) {
             return { error: "内容错误" }
         }
@@ -14,42 +14,81 @@ module.exports = {
             return { error: "无效的分类" }
         }
         post.category_id = cate.id
+        post.category_name = cate.name
         post.status = 0
         const id = await mgr.add(post)
         return { id }
     },
     async remove(ctx) {
-        await mgr.remove(ctx.query.id)
-        return { id: ctx.query.id }
+        const id = ctx.body.query.id;
+        await mgr.remove(id)
+        return { id }
     },
     async update(ctx) {
-        let id = await mgr.update(ctx.query)
+        let id = await mgr.update(ctx.body.query)
         return { id }
     },
     async get(ctx) {
-        const item = await mgr.get(ctx.query.id)
+        const item = await mgr.get(ctx.body.query.id)
         var cate = await category.get(item.category_id) || {}
         item.category_name = cate.name
         item.category_title = cate.title
         return item
     },
+    async view(ctx) {
+        return await mgr.view();
+    },
+    async first(ctx) {
+        return await mgr.first()
+    },
+    async last(ctx) {
+        return await mgr.last()
+    },
+    async next(ctx) {
+        return await mgr.next(ctx.body.query.id)
+    },
+    async prev(ctx) {
+        return await mgr.prev(ctx.body.query.id);
+    },
+    async count(ctx) {
+        return await mgr.count();
+    },
+    async publish(ctx) {
+        const query = ctx.body.query
+        const id = query.id
+        const status = query.publish == 'true' ? 1 : 0;
+        const article = await mgr.get(id)
+        if (article && article.status != status) {
+            await mgr.update({ id: article.id, status })
+            return { id }
+        }
+        return { error: 'op error' }
+    },
+    async search(ctx) {
+        var op = {
+            query: ctx.body.query,
+        }
+
+        return await mgr.search(op)
+    },
     async query(ctx) {
-        const pageSize = parseInt(ctx.query.pageSize || 10)
-        const page = parseInt(ctx.query.page || 1)
+        const query = ctx.body.query
+        const pageSize = parseInt(query.pageSize || 10)
+        const page = parseInt(query.page || 1)
 
         let category_id = null
-        if (ctx.query.cate) {
-            const cate = await category.findOne({ name: ctx.query.cate })
+        if (query.cate) {
+            const cate = await category.findOne({ name: query.cate })
             category_id = (cate || {}).id
         }
 
-        const query = {
-            status: ctx.query.status,
+        const q = {
+            status: query.status,
             category_id,
-            tag: ctx.query.tag,
+            tag: query.tag,
         }
 
-        const r = await mgr.search({ page, limit: pageSize, des: true, query })
+        const r = await mgr.search({ page, limit: pageSize, des: true, query: q })
         if (r.list && r.list.length > 0) {
             for (var i = 0; i < r.list.length; ++i) {
                 var item = r.list[i]
@@ -69,39 +108,4 @@ module.exports = {
         }
         return r;
     },
-    async view(ctx) {
-        return await mgr.view();
-    },
-    async first(ctx) {
-        return await mgr.first()
-    },
-    async last(ctx) {
-        return await mgr.last()
-    },
-    async next(ctx) {
-        return await mgr.next(ctx.query.id)
-    },
-    async prev(ctx) {
-        return await mgr.prev(ctx.query.id);
-    },
-    async count(ctx) {
-        return await mgr.count();
-    },
-    async publish(ctx) {
-        const id = ctx.query.id
-        const status = ctx.query.publish == 'true' ? 1 : 0;
-        const article = await mgr.get(id)
-        if (article && article.status != status) {
-            await mgr.update({ id: article.id, status })
-            return { id }
-        }
-        return { error: 'op error' }
-    },
-    async search(ctx) {
-        var op = {
-            query: ctx.query,
-        }
-
-        return await mgr.search(op)
-    }
 }

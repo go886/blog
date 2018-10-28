@@ -101,9 +101,15 @@ r.forEach(v => {
     });
     o.paths && o.paths.forEach(path => {
       r.all(path, async ctx => {
-        var result = await o.target[path.substr(1)].call(o.target, ctx)
-        ctx.response.type = 'json'
-        ctx.response.body = result||{}
+        try {
+          var fun = o.target[path.substr(1)]
+          var result = await fun.call(o.target, ctx);//await o.target[path.substr(1)].call(o.target, ctx)
+          ctx.response.type = 'json'
+          ctx.response.body = result||{}
+        } catch (error) {
+          console.log(error)
+        }
+       
       });
     })
     router.use(r.routes())

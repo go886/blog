@@ -4,7 +4,8 @@ const db = require('../model/index')
 module.exports = {
 
     async get(ctx) {
-        const id = db.article.decode(ctx.query.id)
+        const query = ctx.body.query
+        const id = db.article.decode(query.id)
         const item = await db.article.get(id)
         if (!item) {
             return { error: '未找到文章' }
@@ -30,7 +31,7 @@ module.exports = {
         return { post: item, next, prev }
     },
     async query(ctx) {
-        ctx.query.status = 1;
+        ctx.body.query.status = 1;
         return await manager.query(ctx)
     },
 }

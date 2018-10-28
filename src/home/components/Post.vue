@@ -1,17 +1,18 @@
 <template>
   <div class="root" v-if="post">
+    <div class="social-share"></div>
+
       <PostHeader :post="post" />
       <img class="cover" :src="post.cover" />
       <MarkDown :value="post.content"/>
       <div class="bottom">
-        <div v-if="prev" class="prev">【上一篇】 <router-link :to="postURL(prev)">{{prev.title}}</router-link></div>
-        <div v-if="next" class="prev">【下一篇】 <router-link :to="postURL(next)">{{next.title}}</router-link></div>
+        <div v-if="prev" class="prev">【上一篇】 <router-link :to="$store.postURL(prev)">{{prev.title}}</router-link></div>
+        <div v-if="next" class="prev">【下一篇】 <router-link :to="$store.postURL(next)">{{next.title}}</router-link></div>
       </div>
   </div>
 </template>
 
 <script>
-import moment from "moment";
 import PostHeader from "./PostHeader";
 import MarkDown from "./Markdown";
 export default {
@@ -34,12 +35,6 @@ export default {
     this.load();
   },
   methods: {
-    postURL(post) {
-      return this.$store.postURL(post);
-    },
-    gmtDateFormatter(time) {
-      return moment(time).format("YYYY/MM/DD");
-    },
     load() {
       this.$http("/api/article/get", {
         params: {

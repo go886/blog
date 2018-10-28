@@ -2,13 +2,14 @@ const mgr = require('../../model/index').setting
 const md5 = require('md5')
 module.exports = {
     async update(ctx) {
+        const query = ctx.body.query
         let user = await mgr.get("user")
         let newUser = {
-            nick: ctx.query.nick,
-            logo: ctx.query.logo,
-            pwd: ctx.query.pwd ? md5(ctx.query.pwd) : null,
-            newPwd: ctx.query.newpwd ? md5(ctx.query.newpwd) : null,
-            newPwd2: ctx.query.newpwd2 ? md5(ctx.query.newpwd2) : null,
+            nick: query.nick,
+            logo: query.logo,
+            pwd: query.pwd ? md5(query.pwd) : null,
+            newPwd: query.newpwd ? md5(query.newpwd) : null,
+            newPwd2: query.newpwd2 ? md5(query.newpwd2) : null,
         }
 
         if (newUser.newPwd) {
@@ -44,8 +45,9 @@ module.exports = {
         return user
     },
     async login(ctx) {
-        const name = ctx.query.name
-        const pwd = ctx.query.pwd
+        const query = ctx.body.query
+        const name = query.name
+        const pwd = query.pwd
         if (!name || !pwd) {
             return { error: '用户名与密码不能为空' }
         }

@@ -49,10 +49,11 @@ app.use(async (ctx, next) => {
 app.use(main)
 app.use(bodyParser());
 app.use(async (ctx, next) => {
-  if (ctx.method == 'POST' && ctx.querystring == "" && ctx.request.body && ctx.request.body.params) {
-    ctx.query = ctx.request.body.params
-  }
+  
   try {
+    ctx.body = {
+      query: ctx.request.body.params || ctx.query
+    }
     return await next()
 
   } catch (error) {

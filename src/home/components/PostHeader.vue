@@ -1,14 +1,14 @@
 <template>
   <div class="header">
         <h1 class="title" v-if="summary == true" >
-            <router-link :to="postURL(post)">{{post.title}}</router-link>
+            <router-link :to="$store.postURL(post)">{{post.title}}</router-link>
         </h1>
         <h1 class="title" v-else >
             {{post.title}}
         </h1>
         <div class="toolbar">
           <i class="fa fa-calendar" >
-              <span>{{gmtDateFormatter(post.add_time)}}</span>
+              <span>{{$store.gmtDateFormatter(post.add_time)}}</span>
           </i>
           <i class="fa fa-eye" v-if="post.pv > 0">
               <span>{{post.pv}}</span>
@@ -30,16 +30,10 @@
 </template>
 
 <script>
-import moment from "moment";
 export default {
-  props: ["post", "enabledlink", "summary"],
+  props: ["post", "summary"],
   methods: {
-    postURL(post) {
-      return this.$store.postURL(post);
-    },
-    gmtDateFormatter(time) {
-      return moment(time).format("YYYY/MM/DD");
-    }
+  
   }
 };
 </script>

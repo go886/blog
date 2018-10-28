@@ -19,28 +19,12 @@
 
 <script>
 export default {
-  data() {
-    return {
-      cates: [],
-      links: []
-    };
-  },
-  created() {
-    this.load();
-  },
-  methods: {
-    load() {
-      this.$http("/api/cate/query").then(res => {
-        if (!res.error) {
-          this.cates = res.list;
-        }
-      });
-
-      this.$http("/api/link/query").then(res => {
-        if (!res.error) {
-          this.links = res.list;
-        }
-      });
+  computed: {
+    links() {
+      return this.$store.state.config.link.list || [];
+    },
+    cates() {
+      return this.$store.state.config.cates.list || [];
     }
   }
 };
@@ -49,15 +33,15 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .root {
-  background-color:antiquewhite;
+  /* background-color: antiquewhite; */
   display: flex;
   flex-direction: row;
-  border-left: 1px solid #eaecef;
-  white-space:nowrap;
-    word-wrap:nowrap;
-    overflow: hidden;
+  border-right: 1px solid #eaecef;
+  white-space: nowrap;
+  word-wrap: nowrap;
+  overflow: hidden;
 
-  /* justify-self: flex-end; */
+  justify-self: flex-end;
 }
 .pannel {
   /* background-color: blue; */

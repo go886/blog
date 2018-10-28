@@ -25,6 +25,31 @@
          <el-form-item v-if="post.type == 1" label="来源URL" prop="source_url">
             <el-input v-model="post.source_url"></el-input>
         </el-form-item>
+        <el-form-item label="标签" >
+          <div v-model="post.tags">
+            <el-tag
+            :key="tag"
+            v-for="tag in post.tags"
+            closable
+            :disable-transitions="false"
+            @close="onRemoveTag(tag)"
+            >
+            {{tag}}
+          </el-tag>
+          <el-input
+            class="input-new-tag"
+            v-if="inputVisible"
+            v-model="inputValue"
+            ref="saveTagInput"
+            size="small"
+            style="max-width:80px;"
+            @keyup.enter.native="onInputConfirm"
+            @blur="onInputConfirm"
+          >
+          </el-input>
+          <el-button v-else class="button-new-tag" size="small" @click="onShowInput">+ 新建tag</el-button>
+          </div>
+        </el-form-item>
         <el-form-item label="摘要" prop='summary'>
           <el-input type="textarea" :rows="3"  v-model="post.summary" ></el-input>
         </el-form-item>
@@ -49,9 +74,12 @@ export default {
     return {
       edit: false,
       visible: false,
+      inputVisible: false,
+      inputValue: null,
       categorys: [],
       post: {
-        type: 0
+        type: 0,
+        tags: []
       },
       rules: {
         title: [
@@ -62,12 +90,12 @@ export default {
           { required: true, message: "请选择分类", trigger: "blur" }
         ],
         summary: [
-          { required: true, message: "请输入摘要", trigger: "blur" },
-        //  { min: 50, message: "至少输入50个字符", trigger: "blur" }
+          { required: true, message: "请输入摘要", trigger: "blur" }
+          //  { min: 50, message: "至少输入50个字符", trigger: "blur" }
         ],
         content: [
-          { required: true, message: "请输入内容", trigger: "blur" },
-        //  { min: 50, message: "至少输入50个字符", trigger: "blur" }
+          { required: true, message: "请输入内容", trigger: "blur" }
+          //  { min: 50, message: "至少输入50个字符", trigger: "blur" }
         ],
         type: [{ required: true, message: "请选择类型", trigger: "blur" }],
         source_url: [{ required: true, message: "请输入URL", trigger: "blur" }]
@@ -101,6 +129,26 @@ export default {
           this.categorys = res.list;
         }
       });
+    },
+    onRemoveTag(tag) {
+      let tags = this.post.tags;
+      tags.splice(tags.indexOf(tag), 1);
+      this.post.tags = JSON.parse(JSON.stringify(tags));
+    },
+    onShowInput() {
+      this.inputVisible = true;
+      this.$nextTick(_ => {
+        this.$refs.saveTagInput.$refs.input.focus();
+      });
+    },
+    onInputConfirm() {
+      let inputValue = this.inputValue;
+      if (inputValue) {
+        if (!this.post.tags) this.post.tags = [];
+        this.post.tags.push(inputValue);
+      }
+      this.inputVisible = false;
+      this.inputValue = "";
     },
     oncommit() {
       this.$refs["form"].validate(valid => {

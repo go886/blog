@@ -22,20 +22,29 @@
       <el-form-item label="Banner" prop="banner">
           <el-input v-model="setting.banner"></el-input>
       </el-form-item>
-       <el-form-item label="统计代码" prop="tracker">
-         <el-input type="textarea" v-model="setting.tracker" :rows="5" ></el-input>
+      <el-form-item label="统计" >
+        <el-switch v-model="setting.enabled_tracker"></el-switch>
       </el-form-item>
-      <el-form-item label="广告插件" prop="plugin_ad">
+       <el-form-item label="统计代码" prop="plugin_tracker" v-if="setting.enabled_tracker == true">
+         <el-input type="textarea" v-model="setting.plugin_tracker" :rows="5" ></el-input>
+      </el-form-item>
+      <el-form-item label="广告" >
+        <el-switch v-model="setting.enabled_ad"></el-switch>
+      </el-form-item>
+      <el-form-item label="广告插件" prop="plugin_ad" v-if="setting.enabled_ad == true">
          <el-input type="textarea" v-model="setting.plugin_ad" :rows="5" ></el-input>
       </el-form-item>
-      <el-form-item label="社会化分享插件" prop="plugin_share">
+       <el-form-item label="分享" >
+        <el-switch v-model="setting.enabled_share"></el-switch>
+      </el-form-item>
+      <el-form-item label="分享插件" prop="plugin_share" v-if="setting.enabled_share == true">
          <el-input type="textarea" v-model="setting.plugin_share" :rows="5" ></el-input>
       </el-form-item>
-      <el-form-item label="评论插件" prop="plugin_comment">
-         <el-input type="textarea" v-model="setting.plugin_comment" :rows="5" ></el-input>
+      <el-form-item label="评论" >
+        <el-switch v-model="setting.enabled_comment"></el-switch>
       </el-form-item>
-      <el-form-item label="评论" prop="comment">
-        <el-switch v-model="setting.comment"></el-switch>
+      <el-form-item label="评论插件" prop="plugin_comment" v-if="setting.enabled_comment == true">
+         <el-input type="textarea" v-model="setting.plugin_comment" :rows="5" ></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">保存设置</el-button>
@@ -57,6 +66,18 @@ export default {
         title: [
           { required: true, message: "请输入标题", trigger: "blur" },
           { min: 3, message: "至少输入 3 个字符", trigger: "blur" }
+        ],
+        plugin_tracker: [
+          { required: true, message: "内容不能为空", trigger: "blur" }
+        ],
+        plugin_ad: [
+          { required: true, message: "内容不能为空", trigger: "blur" }
+        ],
+        plugin_share: [
+          { required: true, message: "内容不能为空", trigger: "blur" }
+        ],
+        plugin_comment: [
+          { required: true, message: "内容不能为空", trigger: "blur" }
         ]
       }
     };
@@ -82,18 +103,20 @@ export default {
             background: "rgba(0, 0, 0, 0.7)"
           });
 
-          this.$http("/api/mgr/setting/update", {
+          this.$http.post("/api/mgr/setting/update", {
             params: this.setting
-          }).then(res => {
-            loading.close();
-            if (!res.error) {
-              this.$message({
-                message: "保存成功"
-              });
-            }
-          }).catch(()=>{
-            loading.close()
-          });
+          })
+            .then(res => {
+              loading.close();
+              if (!res.error) {
+                this.$message({
+                  message: "保存成功"
+                });
+              }
+            })
+            .catch(() => {
+              loading.close();
+            });
         }
       });
     }
@@ -104,11 +127,11 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .root {
-    margin-top: 10px;
-    margin-left: 20px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    /* align-items: center; */
+  margin-top: 10px;
+  margin-left: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
 }
 </style>
