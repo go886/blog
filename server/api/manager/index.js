@@ -4,6 +4,7 @@ const ex = require('./example')
 module.exports = {
     user: require('./user'),
     cate: require('./category'),
+    tag: require('./tags'),
     article: require('./article'),
     link: require('./links'),
     setting: require('./setting'),

@@ -5,6 +5,7 @@ module.exports = {
         const cates = await mgr.cate.query()
         const link = await mgr.link.query()
         const setting = await mgr.setting.get()
-        return { cates, link, setting }
+        const tags = await mgr.tag.query()
+        return { cates, link, setting, tags }
     },
 }

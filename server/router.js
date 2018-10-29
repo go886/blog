@@ -25,6 +25,13 @@ const r = [
     ]
   },
   {
+    target: manager.tag,
+    prefix: '/api/mgr/tag',
+    paths: [
+      '/query',
+    ]
+  },
+  {
     target: manager.article,
     prefix: '/api/mgr/article',
     paths: [
@@ -67,7 +74,7 @@ const r = [
     prefix: '/api/cate',
     paths: [
       '/get',
-      '/query'
+      '/query',
     ]
   },
   {
@@ -75,7 +82,8 @@ const r = [
     prefix: '/api/article',
     paths: [
       '/get',
-      '/query'
+      '/query',
+      '/archives',
     ]
   },
   {
@@ -109,7 +117,6 @@ r.forEach(v => {
         } catch (error) {
           console.log(error)
         }
-       
       });
     })
     router.use(r.routes())

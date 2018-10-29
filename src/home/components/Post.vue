@@ -9,16 +9,19 @@
         <div v-if="prev" class="prev">【上一篇】 <router-link :to="$store.postURL(prev)">{{prev.title}}</router-link></div>
         <div v-if="next" class="prev">【下一篇】 <router-link :to="$store.postURL(next)">{{next.title}}</router-link></div>
       </div>
+      <Comment :id="'post:'+ $route.params.id" v-if="post.comment !== false && $store.state.config.setting.enabled_comment"/>
   </div>
 </template>
 
 <script>
 import PostHeader from "./PostHeader";
 import MarkDown from "./Markdown";
+import Comment from "./Comment";
 export default {
   components: {
     PostHeader,
-    MarkDown
+    MarkDown,
+    Comment
   },
   data() {
     return {
@@ -46,7 +49,7 @@ export default {
           this.next = res.next;
           this.prev = res.prev;
         } else {
-          location.href = "/";
+          window.location.href = "/";
         }
       });
     }

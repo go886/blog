@@ -16,9 +16,9 @@ module.exports = {
             item.category_title = cate.title
         }
 
-        let pvinfo = await db.pv.get(item.id) 
+        let pvinfo = await db.pv.get(item.id)
         if (!pvinfo) {
-            pvinfo = {id:item.id, pv:1}
+            pvinfo = { id: item.id, pv: 1 }
             db.pv.add(pvinfo)
         } else {
             pvinfo.pv += 1;
@@ -34,4 +34,11 @@ module.exports = {
         ctx.body.query.status = 1;
         return await manager.query(ctx)
     },
+    async archives(ctx) {
+        const query = ctx.body.query
+        const pageSize = parseInt(query.pageSize || 10)
+        const page = parseInt(query.page || 1)
+        const r = await db.article.search({ page, limit: pageSize, des: true, query: { status: 1 } })
+        return r
+    }
 }

@@ -71,17 +71,23 @@ model.prototype = {
     },
     async indexingForKey(k, o, remove = false) {
         if (this.props && this.props.indexOf(k) > -1) {
-            const v = o[k]
-            if (v) {
-                var prefixe_name = [SEP + this.name, [k, v].join(INDEX_SEP), o.id].join(SEP)
-                remove ? await db.del(prefixe_name) : await db.put(prefixe_name, { value: o.id })
+            let value = o[k]
+            if (value) {
+                if (!Array.isArray(value)) {
+                    value = [value]
+                }
+                for (let i = 0; i < value.length; ++i) {
+                    const v = value[i]
+                    var prefixe_name = [SEP + this.name, [k, v].join(INDEX_SEP), o.id].join(SEP)
+                    remove ?  await db.del(prefixe_name) :  await db.put(prefixe_name, { value: o.id })
+                }
             }
         }
     },
     async indexing(o, remove = false) {
         if (this.props) {
             for (let i = 0; i < this.props.length; ++i) {
-                await this.indexingForKey(this.props[i], o, remove)
+                 await this.indexingForKey(this.props[i], o, remove)
             }
         }
     },
@@ -124,7 +130,7 @@ model.prototype = {
 
                 item.edit_time = (new Date).getTime()
                 return (await (db.put(this.key(item.id), item))) ? null : item.id
-            } 
+            }
         }
     },
     async get(id) {
@@ -232,9 +238,13 @@ model.prototype = {
         let indexs = []
         if (op.query && Object.keys(op.query).length > 0) {
             Object.keys(op.query).forEach(k => {
-                if (op.query[k]) {
+                let value = op.query[k]
+                if (value) {
                     if (this.props && this.props.indexOf(k) > -1) {
-                        indexs.push([SEP + this.name, [k, op.query[k]].join(INDEX_SEP)].join(SEP))
+                        if (!Array.isArray(value)) value = [value]
+                        for (var i = 0; i < value.length; ++i) {
+                            indexs.push([SEP + this.name, [k, value[i]].join(INDEX_SEP)].join(SEP))
+                        }
                     } else {
                         console.error(k + ' not indexing')
                     }
@@ -302,7 +312,7 @@ model.prototype = {
 }
 module.exports = {
     // idx: new model(''), //indexs
-    article: new model('a', ["category_id", "status", "title"], true), //article
+    article: new model('a', ["category_id", "status", "title", "tags"], true), //article
     category: new model('c'),
     user: new model('u'),
     link: new model('l'),

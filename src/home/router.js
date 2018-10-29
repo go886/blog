@@ -6,6 +6,7 @@ Vue.use(VueRouter)
 import Index from './components/Index'
 import Post from './components/Post'
 import About from './components/About'
+import Archives from './components/Archives'
 import List from './components/Contents'
 
 const router = new VueRouter({
@@ -21,6 +22,11 @@ const router = new VueRouter({
             path: '/about',
             name: '关于',
             component: About,
+        },
+        {
+            path: '/archives',
+            name: '归档',
+            component: Archives,
         },
         {
             path: '/:cate/:id',

@@ -4,6 +4,7 @@
     :visible.sync="visible"
     width="85%"
     :fullscreen='false' top='40px'>
+    
     <el-form  ref="form" size="mini" label-position="right" label-width="80px" :rules="rules" :model="post" class="demo-ruleForm">
         <el-form-item label="标题" prop="title">
             <el-input v-model="post.title"></el-input>
@@ -25,11 +26,10 @@
          <el-form-item v-if="post.type == 1" label="来源URL" prop="source_url">
             <el-input v-model="post.source_url"></el-input>
         </el-form-item>
-        <el-form-item label="标签" >
-          <div v-model="post.tags">
-            <el-tag
-            :key="tag"
+        <el-form-item label="标签">
+          <el-tag
             v-for="tag in post.tags"
+            :key="tag"
             closable
             :disable-transitions="false"
             @close="onRemoveTag(tag)"
@@ -48,7 +48,6 @@
           >
           </el-input>
           <el-button v-else class="button-new-tag" size="small" @click="onShowInput">+ 新建tag</el-button>
-          </div>
         </el-form-item>
         <el-form-item label="摘要" prop='summary'>
           <el-input type="textarea" :rows="3"  v-model="post.summary" ></el-input>
@@ -102,14 +101,7 @@ export default {
       }
     };
   },
-  computed: {
-    // edit() {
-    //     return this.$props.edit
-    // },
-    // post() {
-    //     return this.edit
-    // }
-  },
+  computed: {},
   created() {
     this.loadcategorys();
   },
@@ -119,6 +111,10 @@ export default {
       this.post = JSON.parse(JSON.stringify(post || {}));
       this.finished = finished;
       this.visible = true;
+      const form = this.$refs["form"];
+      if (form) {
+        this.form.resetFields();
+      }
     },
     gmtDateFormatter(time) {
       return moment(time).format("YYYY/MM/DD HH:mm");
@@ -132,8 +128,9 @@ export default {
     },
     onRemoveTag(tag) {
       let tags = this.post.tags;
-      tags.splice(tags.indexOf(tag), 1);
-      this.post.tags = JSON.parse(JSON.stringify(tags));
+      const index = tags.indexOf(tag);
+      tags.splice(index, 1);
+      this.$forceUpdate();
     },
     onShowInput() {
       this.inputVisible = true;
@@ -145,7 +142,11 @@ export default {
       let inputValue = this.inputValue;
       if (inputValue) {
         if (!this.post.tags) this.post.tags = [];
-        this.post.tags.push(inputValue);
+        if (this.post.tags.indexOf(inputValue) == -1) {
+          this.post.tags.push(inputValue);
+        } else {
+          this.$message.error('已存在的标签')
+        }
       }
       this.inputVisible = false;
       this.inputValue = "";
@@ -161,7 +162,8 @@ export default {
             content: this.post.content,
             summary: this.post.summary,
             type: this.post.type,
-            source_url: this.post.source_url
+            source_url: this.post.source_url,
+            tags: this.post.tags
           };
 
           const loading = this.$loading({

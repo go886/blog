@@ -24,8 +24,8 @@ export default {
           icon: "home"
         },
         {
-          name: "存档",
-          path: "/achive",
+          name: "归档",
+          path: "/archives",
           icon: "archive"
         },
         {

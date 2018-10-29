@@ -10,7 +10,8 @@ const store = new Vuex.Store({
         config: {
             setting: {},
             cates: {list:[]},
-            link: {list:[]}
+            link: {list:[]},
+            tags:{list:[]},
         }
     },
     mutations: {

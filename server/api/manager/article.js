@@ -4,7 +4,7 @@ const category = db.category
 
 
 module.exports = {
-    async add(ctx) {
+    async _addOrUpdate(ctx, isAdd) {
         let post = ctx.body.query
         if (!(post.title && post.category_id && post.content && post.summary)) {
             return { error: "内容错误" }
@@ -16,8 +16,20 @@ module.exports = {
         post.category_id = cate.id
         post.category_name = cate.name
         post.status = 0
-        const id = await mgr.add(post)
+
+        if (post.tags) {
+            for (var i = 0; i < post.tags.length; ++i) {
+                const tag = post.tags[i]
+                const r = await db.tag.get(tag)
+                if (!r) db.tag.add({ id: tag })
+            }
+        }
+
+        const id = isAdd ? await mgr.add(post) : await mgr.update(post)
         return { id }
+    },
+    async add(ctx) {
+       return await this._addOrUpdate(ctx, true)
     },
     async remove(ctx) {
         const id = ctx.body.query.id;
@@ -25,8 +37,7 @@ module.exports = {
         return { id }
     },
     async update(ctx) {
-        let id = await mgr.update(ctx.body.query)
-        return { id }
+        return await this._addOrUpdate(ctx)
     },
     async get(ctx) {
         const item = await mgr.get(ctx.body.query.id)
