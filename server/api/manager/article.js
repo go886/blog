@@ -5,7 +5,7 @@ const category = db.category
 
 module.exports = {
     async _addOrUpdate(ctx, isAdd) {
-        let post = ctx.body.query
+        let post = ctx.q
         if (!(post.title && post.category_id && post.content && post.summary)) {
             return { error: "内容错误" }
         }
@@ -15,7 +15,7 @@ module.exports = {
         }
         post.category_id = cate.id
         post.category_name = cate.name
-        post.status = 0
+        // post.status = 0
 
         if (post.tags) {
             for (var i = 0; i < post.tags.length; ++i) {
@@ -29,10 +29,10 @@ module.exports = {
         return { id }
     },
     async add(ctx) {
-       return await this._addOrUpdate(ctx, true)
+        return await this._addOrUpdate(ctx, true)
     },
     async remove(ctx) {
-        const id = ctx.body.query.id;
+        const id = ctx.q.id;
         await mgr.remove(id)
         return { id }
     },
@@ -40,7 +40,7 @@ module.exports = {
         return await this._addOrUpdate(ctx)
     },
     async get(ctx) {
-        const item = await mgr.get(ctx.body.query.id)
+        const item = await mgr.get(ctx.q.id)
         var cate = await category.get(item.category_id) || {}
         item.category_name = cate.name
         item.category_title = cate.title
@@ -56,16 +56,16 @@ module.exports = {
         return await mgr.last()
     },
     async next(ctx) {
-        return await mgr.next(ctx.body.query.id)
+        return await mgr.next(ctx.q.id)
     },
     async prev(ctx) {
-        return await mgr.prev(ctx.body.query.id);
+        return await mgr.prev(ctx.q.id);
     },
     async count(ctx) {
         return await mgr.count();
     },
     async publish(ctx) {
-        const query = ctx.body.query
+        const query = ctx.q
         const id = query.id
         const status = query.publish == 'true' ? 1 : 0;
         const article = await mgr.get(id)
@@ -77,26 +77,29 @@ module.exports = {
     },
     async search(ctx) {
         var op = {
-            query: ctx.body.query,
+            query: ctx.q,
         }
 
         return await mgr.search(op)
     },
     async query(ctx) {
-        const query = ctx.body.query
+        const query = ctx.q
         const pageSize = parseInt(query.pageSize || 10)
         const page = parseInt(query.page || 1)
 
         let category_id = null
         if (query.cate) {
             const cate = await category.findOne({ name: query.cate })
-            category_id = (cate || {}).id
+            if (!cate) {
+                return { error: '无效的分类' }
+            }
+            category_id = cate.id
         }
 
         const q = {
             status: query.status,
             category_id,
-            tag: query.tag,
+            tags: query.tag ,
         }
 
         const r = await mgr.search({ page, limit: pageSize, des: true, query: q })

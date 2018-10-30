@@ -19,7 +19,7 @@
           width="120">
           <template slot-scope="scope">
             <el-button
-            @click.native.prevent="ongotocate(scope.row)"
+            @click.native.prevent="$store.openCate(scope.row.name)"
             type="text"
             size="small">
             {{scope.row.name}}
@@ -43,7 +43,7 @@
           :formatter="dateFormatter">
             <template slot-scope="scope">
             <i class="el-icon-time"></i>
-            <span style="margin-left: 10px">{{ dateFormatter(scope.row.add_time)}}</span>
+            <span style="margin-left: 10px">{{ $store.gmtDateFormatter(scope.row.add_time)}}</span>
           </template>
         </el-table-column>
         <el-table-column label="操作">
@@ -96,9 +96,6 @@ export default {
     this.load();
   },
   methods: {
-    dateFormatter(row, column, cellValue) {
-      return moment(cellValue).format("YYYY/MM/DD HH:mm");
-    },
     load() {
       this.$http("/api/mgr/cate/query")
         .then(res => {
@@ -148,9 +145,6 @@ export default {
             })
         })
     },
-    ongotocate(cate) {
-      window.open("/cate/" + cate.name);
-    }
   }
 };
 </script>

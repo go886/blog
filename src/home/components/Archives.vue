@@ -1,23 +1,18 @@
 <template>
   <div class="root">
-    <el-collapse  class="collapse" v-model="activeName" accordion>
+    <el-collapse  class="collapse" v-model="activeName" >
       <el-collapse-item 
           v-for="info in list" 
           :key="info.year" 
-          :title="info.year" 
-          :name="info.year">
-          <div class="pannel">
-             <el-steps direction="vertical">
-              <el-step 
-                  v-for="post in info.list" 
-                  :key="post.id" 
-                  :title="$store.gmtDateFormatter(post.add_time)"
-                  :description="post.title" 
-                  icon="el-icon-date">
-              </el-step>
-            </el-steps>
-            <!-- <ui v-for="post in info.list" :key="post.id">{{post.title}}</ui> -->
-          </div>
+          :title="info.year + ' ('+ info.list.length +')'"
+          :name="info.year" >
+           <ul class="fa-ul">
+              <li v-for="post in info.list" :key="post.id" class="item">
+                <!-- <span class="fa fa-minus-square-o icon"></span> -->
+                <span class="date">{{$store.gmtDateFormatter(post.add_time, 'MM-DD')}}</span>
+                <router-link :to="$store.postURL(post)">{{post.title}}</router-link>
+              </li>
+            </ul>
       </el-collapse-item>
     </el-collapse>
      <div class="pagination">
@@ -41,10 +36,16 @@ export default {
       pageSize: 20,
       page: 1,
       total: 0,
-      activeName: null
+      activeName: []
     };
   },
+  watch: {
+    $route() {
+      this.load();
+    }
+  },
   created() {
+    this.page = parseInt(this.$route.query.page || 1);
     this.load();
   },
   methods: {
@@ -59,6 +60,7 @@ export default {
         if (!res.error) {
           let yearsMap = {};
           let list = [];
+          let activeName = [];
           res.list.forEach(e => {
             const year = new Date(e.add_time).getFullYear();
             let map = yearsMap[year];
@@ -66,19 +68,24 @@ export default {
               map = { year, list: [] };
               yearsMap[year] = map;
               list.push(map);
-              if (!this.activeName) this.activeName = year;
+              if (activeName.length < 2) {
+                activeName.push(year);
+              }
             }
 
             map.list.push(e);
           });
 
-          console.log(list);
-
           this.list = list;
           this.total = res.total;
           this.page = res.page;
+          this.activeName = activeName;
         }
       });
+    },
+    onPageChanged(page) {
+      this.$router.push({ query: { page } });
+      this.load();
     }
   }
 };
@@ -93,9 +100,26 @@ export default {
   border-radius: 5px;
   padding: 20px;
   background-color: #fff;
+  border: 0;
 }
-.pannel {
+.item {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
+  color: #909399;
+}
+.icon {
+    font-size: 8px;
+}
+.date {
+  font-size: 12px;
+  /* color: #ccc; */
+  margin-right: 10px;
+  margin-left: 4px;
+}
+.pagination {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 </style>

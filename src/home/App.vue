@@ -4,8 +4,7 @@
       <HeaderBar />
       </div>
       <div class="container">
-                <Sider class="sider"/>
-
+        <Sider class="sider"/>
         <div  class="left">
           <transition name="fade" mode="out-in">
             <router-view></router-view>
@@ -112,20 +111,13 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  /* background-color: aquamarine; */
   align-self: stretch;
-  /* margin-left: 20px;
-  margin-right: 20px; */
 }
 
 .left {
   padding: 30px 18px 30px 18px;
-  /* max-width: 660px; */
-  /* min-width: 0;
-  max-width: 80%; */
   display: flex;
   flex-direction: column;
-  /* background-color: beige; */
   flex-basis: 100%;
   max-width: 65%;
 }
@@ -161,6 +153,25 @@ export default {
   max-height: 45px;
   line-height: 45px;
 }
+.slide-fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+.slide-fade-enter-active {
+  transition: all 1.2s ease;
+}
+.slide-fade-leave-active {
+  transition: all 0.1s cubic-bezier(2, 0.5, 0.8, 1);
+}
+.slide-fade-enter,
+.slide-fade-leave-to {
+  left: 0;
+  right: 0;
+  transform: translateX(50px);
+  opacity: 0;
+}
+
 </style>
 <style>
 body {

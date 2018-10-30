@@ -52,40 +52,23 @@ export default {
   created() {
     this.page = parseInt(this.$route.query.page || 1);
     this.load();
-    // this.$http("/api/article/query", {
-    //   params: this.$route.params,
-    //   cate: this.$route.path.indexOf("/cate") == 0
-    // })
-    //   .then(res => {
-    //     this.list = res.list;
-    //     this.next = res.next;
-    //   })
-    //   .catch(res => {
-    //     this.$message({
-    //       message: res,
-    //       type: "warning"
-    //     });
-    //   });
   },
-  computed: {
-   
-  },
+  computed: {},
   methods: {
-   
-   
     load() {
       this.$http("/api/article/query", {
         params: {
           pageSize: this.pageSize,
           page: this.page,
-          cate:
-            this.$route.name == "分类" ? this.$route.path.substring(1) : null
+          cate: this.$route.params.cate,
+          tag: this.$route.params.tag
         }
       }).then(res => {
         if (!res.error) {
           this.list = res.list;
           this.total = res.total;
           this.page = res.page;
+        } else {
         }
       });
     },

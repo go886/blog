@@ -4,7 +4,7 @@ const db = require('../model/index')
 module.exports = {
 
     async get(ctx) {
-        const query = ctx.body.query
+        const query = ctx.q;
         const id = db.article.decode(query.id)
         const item = await db.article.get(id)
         if (!item) {
@@ -31,11 +31,11 @@ module.exports = {
         return { post: item, next, prev }
     },
     async query(ctx) {
-        ctx.body.query.status = 1;
+        ctx.q.status = 1;
         return await manager.query(ctx)
     },
     async archives(ctx) {
-        const query = ctx.body.query
+        const query = ctx.q
         const pageSize = parseInt(query.pageSize || 10)
         const page = parseInt(query.page || 1)
         const r = await db.article.search({ page, limit: pageSize, des: true, query: { status: 1 } })

@@ -13,11 +13,16 @@
           <i class="fa fa-eye" v-if="post.pv > 0">
               <span>{{post.pv}}</span>
           </i>
-           <router-link :to="'/' + post.category_name">
+           <router-link :to="$store.cateURL(post)">
               <i class="fa fa-book" >
                 <span>{{post.category_title}}</span>
               </i>
            </router-link>
+          <i class="fa fa-tag" v-if="post.tags && post.tags.length > 0" style="margin-right:8px;">
+              <router-link v-for="tag in post.tags" :key="tag" :to="$store.cateURL(post)">
+                  {{tag}}
+              </router-link>
+          </i>
            
            <a v-if="post.type == 1 && summary !== true" :href="post.source_url">
               <i  class="fa fa-map">

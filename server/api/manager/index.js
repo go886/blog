@@ -10,6 +10,6 @@ module.exports = {
     setting: require('./setting'),
 }
 
-module.exports.cate.add({body:{query:{name:'net', title:'网络'}}})
-module.exports.cate.add({body:{query:{name:'block', title:'区块链'}}})
+module.exports.cate.add({q:{name:'net', title:'网络'}})
+module.exports.cate.add({q:{name:'block', title:'区块链'}})
 

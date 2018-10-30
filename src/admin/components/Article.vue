@@ -25,7 +25,7 @@
           >
            <template slot-scope="scope">
            <el-button
-            @click.native.prevent="onpost(scope.row)"
+            @click.native.prevent="$store.openPost(scope.row)"
             type="text"
             size="small">
             {{scope.row.title}}
@@ -38,7 +38,7 @@
           >
            <template slot-scope="scope">
            <el-button
-            @click.native.prevent="oncate(scope.row)"
+            @click.native.prevent="$store.openCate(scope.row.category_name)"
             type="text"
             size="small">
             {{scope.row.category_title}}
@@ -64,7 +64,7 @@
           :formatter="dateFormatter">
             <template slot-scope="scope">
             <i class="el-icon-time"></i>
-            <span style="margin-left: 10px">{{ dateFormatter(scope.row.add_time)}}</span>
+            <span style="margin-left: 10px">{{ $store.gmtDateFormatter(scope.row.add_time)}}</span>
           </template>
         </el-table-column>
         <el-table-column label="操作"         
@@ -131,9 +131,6 @@ export default {
     this.load();
   },
   methods: {
-    dateFormatter(row, column, cellValue) {
-      return moment(cellValue).format("YYYY/MM/DD HH:mm");
-    },
     load() {
       this.$http("/api/mgr/article/query", {
         params: {
@@ -148,12 +145,7 @@ export default {
         }
       });
     },
-    onpost(post) {
-      window.open("/#/" + post.category_name + "/" + post._k);
-    },
-    oncate(post) {
-      window.open("/cate/" + post.category_name);
-    },
+   
     filterStatus(value, row) {
       return value == row.status;
     },

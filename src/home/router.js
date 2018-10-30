@@ -3,20 +3,30 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 
-import Index from './components/Index'
 import Post from './components/Post'
 import About from './components/About'
 import Archives from './components/Archives'
 import List from './components/Contents'
+import NotFound from './components/NotFound'
 
 const router = new VueRouter({
-    // mode: 'history',
+    mode: 'history',
     base: __dirname,
     routes: [
         {
             path: '/',
             name: '首页',
             component: List,
+        },
+        {
+            path: '/c/:cate',
+            name: '分类',
+            component: List
+        },
+        {
+            path: '/tag/:tag',
+            name: '标签',
+            component: List
         },
         {
             path: '/about',
@@ -29,31 +39,15 @@ const router = new VueRouter({
             component: Archives,
         },
         {
-            path: '/:cate/:id',
+            path: '/p/:id',
             name: '文章',
             component: Post
         },
         {
-            path: '/:cate',
-            name: '分类',
-            component: List
-        },
-
-        // {
-        //     path: '/:cate',
-        //     name: '类别',
-        //     component: Index
-        // },
-
-        // {
-        //     path: "/cate/:id",
-        //     name: "类别",
-        //     component: Index
-        // }
-        // , {
-        //     path: '*',
-        //     redirect: '/'
-        // }
+            path: '*',
+            name: '404',
+            component: NotFound
+        }
     ]
 });
 

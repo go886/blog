@@ -4,7 +4,7 @@
       <div >
         <h4>文章分类</h4>
         <li v-for="item in cates" :key="item.id">
-        <router-link  :to="'/' + item.name" class='link' >{{item.title }}</router-link>
+        <router-link  :to="'/c/' + item.name" class='link' >{{item.title }}</router-link>
         </li>
       </div>
       <div  v-if="tags.length > 0">

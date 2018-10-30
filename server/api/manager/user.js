@@ -2,7 +2,7 @@ const mgr = require('../../model/index').setting
 const md5 = require('md5')
 module.exports = {
     async update(ctx) {
-        const query = ctx.body.query
+        const query = ctx.q
         let user = await mgr.get("user")
         let newUser = {
             nick: query.nick,
@@ -45,7 +45,7 @@ module.exports = {
         return user
     },
     async login(ctx) {
-        const query = ctx.body.query
+        const query = ctx.q
         const name = query.name
         const pwd = query.pwd
         if (!name || !pwd) {

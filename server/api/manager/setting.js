@@ -1,7 +1,7 @@
 const mgr = require('../../model/index').setting
 module.exports = {
     async update(ctx) {
-        let setting = JSON.parse(JSON.stringify(ctx.body.query))
+        let setting = JSON.parse(JSON.stringify(ctx.q))
         setting.id = 'syssetting'
         let id = await mgr.add(setting)
         return { id }

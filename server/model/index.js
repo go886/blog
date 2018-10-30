@@ -79,7 +79,7 @@ model.prototype = {
                 for (let i = 0; i < value.length; ++i) {
                     const v = value[i]
                     var prefixe_name = [SEP + this.name, [k, v].join(INDEX_SEP), o.id].join(SEP)
-                    remove ?  await db.del(prefixe_name) :  await db.put(prefixe_name, { value: o.id })
+                    remove ? await db.del(prefixe_name) : await db.put(prefixe_name, { value: o.id })
                 }
             }
         }
@@ -87,7 +87,7 @@ model.prototype = {
     async indexing(o, remove = false) {
         if (this.props) {
             for (let i = 0; i < this.props.length; ++i) {
-                 await this.indexingForKey(this.props[i], o, remove)
+                await this.indexingForKey(this.props[i], o, remove)
             }
         }
     },
@@ -294,7 +294,7 @@ model.prototype = {
                 }
             }
         }
-        return { total, list, page }
+        return { total, list, page: page + 1 }
     },
 
     async view() {

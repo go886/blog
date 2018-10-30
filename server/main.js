@@ -1,3 +1,4 @@
+const fs = require('fs');
 const session = require('koa-session');
 const Koa = require('koa');
 const path = require('path');
@@ -48,20 +49,16 @@ app.use(async (ctx, next) => {
 });
 app.use(main)
 app.use(bodyParser());
-app.use(async (ctx, next) => {
-  
-  try {
-    ctx.body = {
-      query: ctx.request.body.params || ctx.query
-    }
-    return await next()
-
-  } catch (error) {
-    console.log(error.stack)
-  }
-});
+// app.use(async (ctx, next) => {
+//   return await next()
+// });
 app
   .use(router.routes())
   .use(router.allowedMethods());
+
+app.use(async(ctx)=>{
+  ctx.response.type = 'html';
+  ctx.response.body = fs.createReadStream(path.join(__dirname, '../dist/index.html'));
+})
 console.log('listen')
-app.listen(3000);
+app.listen(3080);

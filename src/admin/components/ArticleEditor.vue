@@ -163,7 +163,7 @@ export default {
             summary: this.post.summary,
             type: this.post.type,
             source_url: this.post.source_url,
-            tags: this.post.tags
+            tags: this.post.tags,
           };
 
           const loading = this.$loading({

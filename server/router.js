@@ -110,6 +110,7 @@ r.forEach(v => {
     o.paths && o.paths.forEach(path => {
       r.all(path, async ctx => {
         try {
+          ctx.q = ctx.request.body.params || ctx.query
           var fun = o.target[path.substr(1)]
           var result = await fun.call(o.target, ctx);//await o.target[path.substr(1)].call(o.target, ctx)
           ctx.response.type = 'json'
@@ -123,5 +124,4 @@ r.forEach(v => {
     router.use(r.allowedMethods())
   })(v)
 });
-
 module.exports = router

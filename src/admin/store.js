@@ -8,10 +8,6 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
     state: {
         config: {
-            setting: {},
-            cates: {list:[]},
-            link: {list:[]},
-            tags:{list:[]},
         }
     },
     mutations: {
@@ -31,6 +27,12 @@ const methods = {
     },
     gmtDateFormatter(time, fmt) {
         return moment(time).format(fmt || "YYYY/MM/DD");
+    },
+    openCate(category_name) {
+        window.open("/c/" + category_name);
+    },
+    openPost(post){
+        window.open(this.postURL(post))
     }
 }
 

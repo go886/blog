@@ -49,7 +49,9 @@ export default {
           this.next = res.next;
           this.prev = res.prev;
         } else {
-          window.location.href = "/";
+          // setTimeout(()=>{
+          //   window.location.href = "/";
+          // }, 2000)
         }
       });
     }
