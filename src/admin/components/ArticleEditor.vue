@@ -86,6 +86,7 @@ export default {
       categorys: [],
       post: {
         type: 0,
+        cover_position:0,
         tags: []
       },
       rules: {

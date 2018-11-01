@@ -155,9 +155,8 @@ export default {
 .cover_left {
   display: block;
   align-self: center;
-  width: 300px;
-  max-width: 300px;
   height: 100%;
+	width: 300px;
 }
 .cover_right {
   display: block;

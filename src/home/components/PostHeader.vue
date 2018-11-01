@@ -19,8 +19,8 @@
               </i>
            </router-link>
           <i class="fa fa-tag" v-if="post.tags && post.tags.length > 0" style="margin-right:8px;">
-              <router-link v-for="tag in post.tags" :key="tag" :to="$store.cateURL(post)">
-                  {{tag}}
+              <router-link style="margin-right:4px;" v-for="tag in post.tags" :key="tag" :to="$store.tagURL(tag)">
+                  #{{tag}}
               </router-link>
           </i>
            

@@ -29,6 +29,9 @@ const methods = {
     cateURL(post){
         return `/c/${post.category_name}`
     },
+    tagURL(tag){
+        return `/tag/${tag}`
+    },
     gmtDateFormatter(time, fmt) {
         return moment(time).format(fmt || "YYYY/MM/DD");
     }
