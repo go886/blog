@@ -120,6 +120,7 @@ export default {
   flex-direction: column;
   flex-basis: 100%;
   max-width: 65%;
+  /* max-width: 960px; */
 }
 
 .sider {

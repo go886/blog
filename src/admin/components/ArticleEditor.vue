@@ -12,6 +12,14 @@
         <el-form-item label="封面" prop="cover">
             <el-input v-model="post.cover"></el-input>
         </el-form-item>
+        <el-form-item label="封面位置">
+          <el-radio-group v-model="post.cover_position">
+            <el-radio :label="0">上</el-radio>
+            <el-radio :label="1">左</el-radio>
+            <el-radio :label="2">右</el-radio>
+            <el-radio :label="3">下</el-radio>
+          </el-radio-group>
+        </el-form-item>
        <el-form-item label="分类" prop="category_id">
             <el-select v-model="post.category_id" placeholder="请选择活动区域">
               <el-option v-for="item in categorys" :label="item.title" :value="item.id" :key="item.id"></el-option>
@@ -145,7 +153,7 @@ export default {
         if (this.post.tags.indexOf(inputValue) == -1) {
           this.post.tags.push(inputValue);
         } else {
-          this.$message.error('已存在的标签')
+          this.$message.error("已存在的标签");
         }
       }
       this.inputVisible = false;
@@ -159,11 +167,12 @@ export default {
             title: this.post.title,
             category_id: this.post.category_id,
             cover: this.post.cover,
+            cover_position: this.post.cover_position,
             content: this.post.content,
             summary: this.post.summary,
             type: this.post.type,
             source_url: this.post.source_url,
-            tags: this.post.tags,
+            tags: this.post.tags
           };
 
           const loading = this.$loading({

@@ -1,17 +1,17 @@
 <template>
   <div class="root">
-   <div class='post' v-for="post in list" :key="post.id">
-     <router-link :to="$store.postURL(post)" v-if="post.cover">
-       <img class='cover' :src="post.cover"  :title="'查看文章：' + post.title"/>
-     </router-link>
+   <div  class="post" v-for="post in list" :key="post.id">
+     <router-link class="content" :to="$store.postURL(post)">
+      <img class='cover' :class="coverPosition(post)"  v-if="post.cover" :src="post.cover"  :title="'查看文章：' + post.title"/>
       <div class="postcontent">
-          <PostHeader :post="post" :summary="true"/>
-          <div class='content' >
-          <!-- <div class='desc' v-if="post.summary">
-               <p style="text-indent: 2em;margin:0;padding:0;">{{ post.summary +'...' }}</p>
-          </div> -->
+        <PostHeader :post="post" :summary="true"/>
+        <div class='content' >
+        <!-- <div class='desc' v-if="post.summary">
+            <p style="text-indent: 2em;margin:0;padding:0;">{{ post.summary +'...' }}</p>
+        </div> -->
+        </div>
       </div>
-   </div>
+     </router-link>
    </div>
    <div class="pagination">
     <el-pagination v-if='list.length > 0'
@@ -55,6 +55,17 @@ export default {
   },
   computed: {},
   methods: {
+    coverPosition(post) {
+      if (1 == post.cover_position) {
+        return "cover_left";
+      } else if (2 == post.cover_position) {
+        return "cover_right";
+      } else if (3 == post.cover_position) {
+        return "cover_bottom";
+      } else {
+        return "cover_top";
+      }
+    },
     load() {
       this.$http("/api/article/query", {
         params: {
@@ -98,33 +109,74 @@ export default {
   /* background-color: beige; */
 }
 .post {
-  display: flex;
-  flex-direction: column;
   background-color: #fff;
   margin-bottom: 20px;
-  /* padding: 50px; */
-
   height: auto;
   display: block;
   border-radius: 5px;
   overflow: hidden;
+  transition: all 0.5s ease;
+  box-shadow: 8px 14px 38px rgba(39, 44, 49, 0.06),
+    1px 3px 8px rgba(39, 44, 49, 0.03);
+}
+.post:hover {
+  transform: translate3D(0, -1px, 0) scale(1.01);
+}
+.content {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  /* justify-content: space-between; */
 }
 .postcontent {
   padding: 20px 50px;
+  flex: 1;
 }
 .cover {
+  display: block;
   align-self: center;
-  max-width: 100%;
+  width: auto;
+  height: auto;
+}
+.cover_bottom {
   width: 100%;
+  min-width: 100%;
+  display: block;
+  height: auto;
+}
+.cover_top {
+  width: 100%;
+  min-width: 100%;
   display: block;
   height: auto;
   max-height: 400px;
-
-  /* top: 50%; */
-  /* -webkit-transform: translateY(-50%);
-  -ms-transform: translateY(-50%);
-  -moz-transform: translateY(-50%); */
+  align-self: center;
 }
+.cover_left {
+  display: block;
+  align-self: center;
+  width: 300px;
+  max-width: 300px;
+  height: 100%;
+}
+.cover_right {
+  display: block;
+  align-self: center;
+  width: 300px;
+  max-width: 300px;
+  height: 100%;
+  order: 2;
+}
+.cover_bottom {
+  width: 100%;
+  min-width: 100%;
+  display: block;
+  height: auto;
+  max-height: 400px;
+  align-self: center;
+  order: 2;
+}
+
 .right {
   margin-right: 20px;
   display: flex;
@@ -133,11 +185,11 @@ export default {
 .title {
   font-size: 28px;
 }
-.content {
+/* .content {
   flex: 1;
   display: flex;
   flex-direction: column;
-}
+} */
 .desc {
   overflow: hidden;
   text-overflow: ellipsis;

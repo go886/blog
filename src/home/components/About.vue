@@ -1,15 +1,22 @@
 <template>
   <div class="root">
-      helper...
+          <MarkDown :value="post.content"/>
+
   </div>
 </template>
 
 <script>
+import MarkDown from "./Markdown";
+
 export default {
-  props: {
-    msg: String
+  components: {
+    MarkDown
+  },
+
+  methods: {
+    onload() {}
   }
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
