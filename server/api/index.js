@@ -3,4 +3,5 @@ module.exports = {
     article: require('./article'),
     link: require('./link'),
     blog: require('./blog'),
+    about: require('./about'),
 }

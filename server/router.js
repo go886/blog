@@ -11,6 +11,7 @@ const r = [
       '/update',
       '/get',
       '/login',
+      '/logout',
     ]
   },
   {
@@ -70,6 +71,14 @@ const r = [
     ]
   },
   {
+    target: manager.about,
+    prefix: '/api/mgr/about',
+    paths: [
+      '/update',
+      '/get',
+    ]
+  },
+  {
     target: api.cate,
     prefix: '/api/cate',
     paths: [
@@ -91,6 +100,13 @@ const r = [
     prefix: '/api/link',
     paths: [
       '/query'
+    ]
+  },
+  {
+    target: api.about,
+    prefix: '/api/about',
+    paths: [
+      '/get',
     ]
   },
   {

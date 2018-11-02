@@ -55,7 +55,8 @@ module.exports = {
         let user2 = await mgr.get("user")
         if (!user2) { //第一次登录
             user.id = 'user'
-            user.nick = 'admin'
+            user.nick = name
+            user.logo = 'https://s1.xmcdn.com/lib/xmweb/images/default_9c0f537.png'
             if (await mgr.add(user)) {
                 //cookie
                 ctx.session.token = await this.token()
@@ -68,17 +69,22 @@ module.exports = {
                 if (await mgr.update(user2)) {
                     //cookie
                     ctx.session.token = await this.token()
+
                     return { succeed: true }
                 }
             }
         }
         return { error: '未知错误' }
     },
+    async logout(ctx) {
+        ctx.session.token = null
+        return { succeed: true }
+    },
     async token() {
-        const user = await mgr.get("user")||{}
+        const user = await mgr.get("user") || {}
         const token = {
             name: user.name,
-            pwd: md5(user.pwd + user.name)
+            pwd: md5(user.pwd + user.name),
         }
         return md5(JSON.stringify(token))
     }

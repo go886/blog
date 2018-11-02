@@ -1,7 +1,6 @@
 <template>
   <div class="root">
-          <MarkDown :value="post.content"/>
-
+          <MarkDown :value="info.content"/>
   </div>
 </template>
 
@@ -12,9 +11,22 @@ export default {
   components: {
     MarkDown
   },
-
+  data() {
+    return {
+      info: {}
+    };
+  },
+  created() {
+    this.onload();
+  },
   methods: {
-    onload() {}
+    onload() {
+      this.$http("/api/about/get").then(res => {
+        if (!res.error) {
+          this.info = res;
+        }
+      });
+    }
   }
 };
 </script>

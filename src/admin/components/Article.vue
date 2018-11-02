@@ -46,6 +46,16 @@
           </template>
         </el-table-column>
         <el-table-column
+          prop="category_tags"
+          label="标签"
+          >
+           <template slot-scope="scope">
+             <a v-for="tag in scope.row.tags" :key="tag"  :href="$store.tagURL(tag)" target="_blank">
+               <el-tag  style="margin:2px 3px;" size="mini" type="danger">{{tag}}</el-tag>
+            </a>
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="pv"
           label="Pv"
           width="80">
@@ -61,7 +71,7 @@
         <el-table-column
           label="最后更新时间"
           width="180"
-          :formatter="dateFormatter">
+          :formatter="$store.dateFormatter">
             <template slot-scope="scope">
             <i class="el-icon-time"></i>
             <span style="margin-left: 10px">{{ $store.gmtDateFormatter(scope.row.add_time)}}</span>

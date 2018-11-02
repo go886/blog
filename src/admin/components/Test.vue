@@ -1,16 +1,19 @@
 <template>
   <div class="root">
     <div>
-        <a href="http://localhost:3000/api/mgr/article/view" target="_blank">view</a>
+        <a href="http://localhost:3080/api/mgr/article/view" target="_blank">view</a>
       </div>
       <div>
-        <a href="http://localhost:3000/api/mgr/article/add" target="_blank">article_add</a>
+        <a href="http://localhost:3080/api/mgr/article/add" target="_blank">article_add</a>
       </div>
             <div>
-        <a href="http://localhost:3000/api/mgr/article/first" target="_blank">article_first</a>
+        <a href="http://localhost:3080/api/mgr/article/first" target="_blank">article_first</a>
       </div>
             <div>
-        <a href="http://localhost:3000/api/mgr/article/last" target="_blank">article_last</a>
+        <a href="http://localhost:3080/api/mgr/article/last" target="_blank">article_last</a>
+      </div>
+       <div>
+        <a href="http://localhost:3080/api/mgr/user/get" target="_blank">user_get</a>
       </div>
          <div>
         <a href="/login.html" target="_blank">login</a>

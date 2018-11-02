@@ -1,8 +1,11 @@
 <template>
   <div id="app" >
+
       <div class="headerbg" :style="{'background-image':'url('+banner+')'}">
       <HeaderBar />
       </div>
+            <!-- <HeaderBar /> -->
+
       <div class="container">
         <Sider class="sider"/>
         <div  class="left">
@@ -12,6 +15,7 @@
         </div>
       </div>
       <Footer class='footer'/>
+
   </div>
 </template>
 
@@ -77,8 +81,8 @@ export default {
 
       if (res.setting) {
         document.title = res.setting.name;
-        this.$store.state.config = res
-        console.log("store:", this.$store.state)
+        this.$store.state.config = res;
+        console.log("store:", this.$store.state);
         if (res.setting.enabled_tracker && res.setting.plugin_tracker) {
           loadPlugin("tracker", res.setting.plugin_tracker);
         }
@@ -96,6 +100,7 @@ export default {
   background-color: #f0f2f5;
   align-items: center;
 }
+
 .headerbg {
   height: 325px;
   width: 100%;
@@ -172,7 +177,6 @@ export default {
   transform: translateX(50px);
   opacity: 0;
 }
-
 </style>
 <style>
 body {

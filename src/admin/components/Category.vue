@@ -35,12 +35,12 @@
           prop="add_time"
           label="创建时间"
           width="180"
-          :formatter="dateFormatter">
+          :formatter="$store.dateFormatter">
         </el-table-column>
         <el-table-column
           label="最后更新时间"
           width="180"
-          :formatter="dateFormatter">
+          :formatter="$store.dateFormatter">
             <template slot-scope="scope">
             <i class="el-icon-time"></i>
             <span style="margin-left: 10px">{{ $store.gmtDateFormatter(scope.row.add_time)}}</span>
@@ -82,7 +82,6 @@
 </template>
 
 <script>
-import moment from "moment";
 export default {
   data() {
     return {

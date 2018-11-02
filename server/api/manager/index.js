@@ -8,8 +8,9 @@ module.exports = {
     article: require('./article'),
     link: require('./links'),
     setting: require('./setting'),
+    about: require('./about'),
 }
 
-module.exports.cate.add({q:{name:'net', title:'网络'}})
-module.exports.cate.add({q:{name:'block', title:'区块链'}})
+module.exports.cate.add({ q: { name: 'net', title: '网络' } })
+module.exports.cate.add({ q: { name: 'block', title: '区块链' } })
 

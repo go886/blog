@@ -1,5 +1,6 @@
 <template>
   <div class="root">
+   
     <el-menu :default-active="formatPath($route.path)"  class="el-menu-vertical-demo" @select="handleSelect" :collapse="isCollapse">
         <el-submenu index="1" >
             <template slot="title">
@@ -29,16 +30,17 @@
 export default {
   data() {
     return {
-      isCollapse: false
+      isCollapse: false,
     };
   },
   computed: {
     managers() {
-      return this.$router.options.routes.slice(0, -3);
+      return this.$router.options.routes.slice(0, -4);
     },
     settings() {
-      return this.$router.options.routes.slice(-3);
-    }
+      return this.$router.options.routes.slice(-4);
+    },
+ 
   },
   methods: {
     handleSelect(key) {
@@ -46,8 +48,9 @@ export default {
     },
     formatPath(path) {
       var p = path.split("/")[1];
-      return '/' + p;
-    }
+      return "/" + p;
+    },
+    
   }
 };
 </script>
@@ -56,7 +59,10 @@ export default {
 <style scoped>
 .root {
   display: flex;
+  flex-direction: column;
+  background-color: #fff;
 }
+
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 200px;
   min-height: 400px;

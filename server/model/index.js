@@ -310,6 +310,7 @@ model.prototype = {
         });
     }
 }
+
 module.exports = {
     // idx: new model(''), //indexs
     article: new model('a', ["category_id", "status", "title", "tags"], true), //article
@@ -319,4 +320,19 @@ module.exports = {
     tag: new model('t'),
     setting: new model('s'),
     pv: new model('p'),
+    kv: (function (m) {
+        return {
+            async get(k, defaultvalue) {
+                let v = await m.get(k)
+                return v || defaultvalue;
+            },
+            async set(id, value) {
+                if (!id  || (value && value.id && id !== value.id)) {
+                    return {error:'id error'}
+                } 
+                value.id = id;
+                return { id :await m.add(value)}
+            }
+        }
+    })(new model('kv'))
 }
