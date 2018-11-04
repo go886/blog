@@ -19,10 +19,10 @@ module.exports = {
 
   deploy : {
     production : {
-      user : 'admin',
-      host : 'localhost',
+      user : 'go886',
+      host : '192.168.2.104',
       ref  : 'origin/master',
-      repo : 'git@github.com::go886/blog.git',
+      repo : 'git@192.168.2.104:go886/blog.git',
       path : '/volume1/web/blog',
       'post-deploy' : 'npm install && pm2 reload ecosystem.config.js --env production'
     }
