@@ -59,34 +59,19 @@
         </el-table-column>
       </el-table>
     </div>
-  <el-dialog
-    :title="edit ? '修改' : '新增'"
-    :visible.sync="dialogVisible"
-    width="40%">
-    <div class='inputpannel'>
-     <el-input placeholder="请输入名称" v-model="cate.name" :disabled='edit'>
-      <template slot="prepend">名称:</template>
-    </el-input>
-    </div>
-     <div class='inputpannel'>
-    <el-input placeholder="请输入标题" v-model="cate.title" >
-      <template slot="prepend">标题:</template>
-    </el-input>
-     </div>
-    <span slot="footer" class="dialog-footer">
-      <el-button @click="dialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="oncommitedit">确 定</el-button>
-    </span>
-  </el-dialog>
+    <CategoryForm ref="form"/>
   </div>
 </template>
 
 <script>
+import CategoryForm from "./CategoryForm";
 export default {
+  components: {
+    CategoryForm
+  },
   data() {
     return {
       cates: [],
-      cate: {},
       edit: false,
       dialogVisible: false
     };
@@ -96,54 +81,36 @@ export default {
   },
   methods: {
     load() {
-      this.$http("/api/mgr/cate/query")
-        .then(res => {
-          if (!res.error) this.cates = res.list;
-        })
+      this.$http("/api/mgr/cate/query").then(res => {
+        if (!res.error) this.cates = res.list;
+      });
     },
     onadd() {
-      this.cate = {};
-      this.edit = false;
-      this.dialogVisible = true;
+      this.$refs["form"].show(null, r => {
+        this.load();
+      });
     },
     onedit(cate) {
-      this.cate = JSON.parse(JSON.stringify(cate));
-      this.edit = true;
-      this.dialogVisible = true;
-    },
-    oncommitedit() {
-      this.$http(
-        this.edit == true ? "/api/mgr/cate/update" : "/api/mgr/cate/add",
-        {
-          params: this.cate
-        }
-      )
-        .then(res => {
-          if (!res.error) {
-            this.$message(this.edit ? "修改成功" : "创建成功");
-            this.dialogVisible = false;
-            this.load();
-          }
-        })
+       this.$refs["form"].show(cate, r => {
+        this.load();
+      });
     },
     onremove(cate) {
       this.$confirm("此操作将永久删除 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      })
-        .then(() => {
-          this.$http("/api/mgr/cate/remove", {
-            params: cate
-          })
-            .then(res => {
-              if (!res.error) {
-                this.$message("删除成功");
-                this.cates.splice(this.cates.indexOf(cate), 1);
-              }
-            })
-        })
-    },
+      }).then(() => {
+        this.$http("/api/mgr/cate/remove", {
+          params: cate
+        }).then(res => {
+          if (!res.error) {
+            this.$message("删除成功");
+            this.cates.splice(this.cates.indexOf(cate), 1);
+          }
+        });
+      });
+    }
   }
 };
 </script>

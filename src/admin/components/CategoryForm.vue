@@ -1,23 +1,18 @@
 <template>
 <el-dialog
-    :title="edit ? '修改 - 友情连接' : '新增 - 友情连接'"
+    :title="edit ? '修改 - 分类' : '新增 - 分类'"
     :visible.sync="visible"
     width="600px;"
     :fullscreen='false' >
     <el-form ref="form"  label-position="right" label-width="80px" :rules="rules" :model="item" class="demo-ruleForm">
-        <el-form-item  prop="name">
-            <el-input v-model.trim="item.name">
-              <template slot="prepend">名称:</template>
+        <el-form-item label="" prop="name">
+            <el-input  v-model.trim="item.name" :disabled='edit'>
+                <template slot="prepend">名称:</template>
             </el-input>
         </el-form-item>
-        <el-form-item  prop="url">
-            <el-input v-model.trim="item.url">
-               <template slot="prepend">URL:</template>
-            </el-input>
-        </el-form-item>
-        <el-form-item prop="desc">
-            <el-input v-model="item.desc">
-               <template slot="prepend">备注:</template>
+        <el-form-item label="" prop="title">
+            <el-input v-model.trim="item.title">
+                <template slot="prepend">标题:</template>
             </el-input>
         </el-form-item>
     </el-form>
@@ -39,10 +34,16 @@ export default {
       rules: {
         name: [
           { required: true, message: "请输入名称", trigger: "blur" },
-          { min: 3, max: 20, message: "长度在 3 到 20 个字符", trigger: "blur" }
+          { min: 1, message: "请至少输入 1 个字符", trigger: "blur" },
+          {
+            pattern: /^[a-z]+$/,
+            message: "仅可输入小写字母",
+            trigger: "blur"
+          }
         ],
-        url: [
-          { required: true, type: "url", message: "请输入有效URL", trigger: "blur" }
+        title: [
+          { required: true, message: "请输入标题", trigger: "blur" },
+          { min: 1, message: "请至少输入 1 个字符", trigger: "blur" }
         ]
       }
     };
@@ -58,14 +59,8 @@ export default {
     },
     oncommit() {
       this.$refs["form"].validate(valid => {
-        if (valid)  {
-          const item = {
-            id: this.item.id,
-            name: this.item.name,
-            url: this.item.url,
-            desc: this.item.desc
-          };
-
+        if (!valid) {
+        } else {
           const loading = this.$loading({
             lock: true,
             text: "Loading",
@@ -73,8 +68,8 @@ export default {
             background: "rgba(0, 0, 0, 0.7)"
           });
 
-          this.$http.post(this.edit ? "/api/mgr/link/update" : "/api/mgr/link/add", {
-            params: item
+          this.$http.post(this.edit ? "/api/mgr/cate/update" : "/api/mgr/cate/add", {
+            params: this.item
           }).then(res => {
             loading.close();
             if (!res.error) {

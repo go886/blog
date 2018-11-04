@@ -318,7 +318,6 @@ module.exports = {
     user: new model('u'),
     link: new model('l'),
     tag: new model('t'),
-    setting: new model('s'),
     pv: new model('p'),
     kv: (function (m) {
         return {

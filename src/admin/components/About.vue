@@ -1,6 +1,9 @@
 <template>
 <div class='root'>
- <el-form ref="form" style="width: 80%;"  label-position="right" label-width="100px" :rules="rules" :model="info" class="demo-ruleForm">
+ <el-form ref="form" style="width:90%;"  label-position="right" label-width="100px" :rules="rules" :model="info" class="demo-ruleForm">
+      <el-form-item label="允许评论" >
+        <el-switch v-model="info.comment"></el-switch>
+      </el-form-item>
         <el-form-item label="正文" prop='content'>
           <el-input type="textarea" :rows="18"  v-model="info.content" ></el-input>
         </el-form-item>     
@@ -15,7 +18,10 @@
 export default {
   data() {
     return {
-      info: {},
+      info: {
+        comment: true,
+        content: ""
+      },
       rules: {
         name: [
           { required: true, message: "请输入名称", trigger: "blur" },
@@ -42,7 +48,7 @@ export default {
     onSubmit() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          this.$http("/api/mgr/about/update", {
+          this.$http.post("/api/mgr/about/update", {
             params: this.info
           }).then(res => {
             if (!res.error) {
@@ -61,11 +67,11 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .root {
-    margin-top: 20px;
-    margin-left: 20px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    /* align-items: center; */
+  margin-top: 20px;
+  margin-left: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
 }
 </style>

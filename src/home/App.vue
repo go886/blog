@@ -82,7 +82,6 @@ export default {
       if (res.setting) {
         document.title = res.setting.name;
         this.$store.state.config = res;
-        console.log("store:", this.$store.state);
         if (res.setting.enabled_tracker && res.setting.plugin_tracker) {
           loadPlugin("tracker", res.setting.plugin_tracker);
         }
@@ -102,7 +101,7 @@ export default {
 }
 
 .headerbg {
-  height: 325px;
+  height: 260px;
   width: 100%;
   display: flex;
   flex-direction: column;

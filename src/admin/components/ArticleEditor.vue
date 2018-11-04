@@ -7,7 +7,7 @@
     
     <el-form  ref="form" size="mini" label-position="right" label-width="80px" :rules="rules" :model="post" class="demo-ruleForm">
         <el-form-item label="标题" prop="title">
-            <el-input v-model="post.title"></el-input>
+            <el-input v-model.trim="post.title"></el-input>
         </el-form-item>
         <el-form-item label="封面" prop="cover">
             <el-input v-model="post.cover"></el-input>
@@ -15,6 +15,7 @@
         <el-form-item label="封面位置">
           <el-radio-group v-model="post.cover_position">
             <el-radio :label="0">上</el-radio>
+            <el-radio :label="4">中</el-radio>
             <el-radio :label="1">左</el-radio>
             <el-radio :label="2">右</el-radio>
             <el-radio :label="3">下</el-radio>
@@ -58,10 +59,13 @@
           <el-button v-else class="button-new-tag" size="small" @click="onShowInput">+ 新建tag</el-button>
         </el-form-item>
         <el-form-item label="摘要" prop='summary'>
-          <el-input type="textarea" :rows="3"  v-model="post.summary" ></el-input>
+          <el-input type="textarea" :rows="3"  v-model.trim="post.summary" ></el-input>
         </el-form-item>
         <el-form-item label="正文" prop='content'>
-          <el-input type="textarea" :rows="18"  v-model="post.content" ></el-input>
+          <el-input type="textarea" :rows="18"  v-model.trim="post.content" ></el-input>
+        </el-form-item>
+         <el-form-item label="允许评论" >
+          <el-switch v-model="post.comment"></el-switch>
         </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -86,8 +90,9 @@ export default {
       categorys: [],
       post: {
         type: 0,
-        cover_position:0,
-        tags: []
+        cover_position: 0,
+        tags: [],
+        comment: true
       },
       rules: {
         title: [
@@ -106,7 +111,14 @@ export default {
           //  { min: 50, message: "至少输入50个字符", trigger: "blur" }
         ],
         type: [{ required: true, message: "请选择类型", trigger: "blur" }],
-        source_url: [{ required: true, message: "请输入URL", trigger: "blur" }]
+        source_url: [
+          {
+            required: true,
+            type: "url",
+            message: "请输入有效URL",
+            trigger: "blur"
+          }
+        ]
       }
     };
   },
@@ -117,7 +129,16 @@ export default {
   methods: {
     show(post, finished) {
       this.edit = !!post;
-      this.post = JSON.parse(JSON.stringify(post || {}));
+      this.post = JSON.parse(
+        JSON.stringify(
+          post || {
+            type: 0,
+            cover_position: 0,
+            tags: [],
+            comment: true
+          }
+        )
+      );
       this.finished = finished;
       this.visible = true;
       const form = this.$refs["form"];
@@ -143,7 +164,7 @@ export default {
     },
     onShowInput() {
       this.inputVisible = true;
-      this.$nextTick(_ => {
+      this.$nextTick(()=> {
         this.$refs.saveTagInput.$refs.input.focus();
       });
     },
@@ -173,7 +194,8 @@ export default {
             summary: this.post.summary,
             type: this.post.type,
             source_url: this.post.source_url,
-            tags: this.post.tags
+            tags: this.post.tags,
+            comment: this.post.comment,
           };
 
           const loading = this.$loading({

@@ -52,7 +52,7 @@ export default {
   border-left: 5px solid #6ce26c;
   /* padding-bottom: 5px; */
   padding-left: 5px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 .header a {
   color: #333;

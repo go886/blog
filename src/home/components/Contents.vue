@@ -2,13 +2,14 @@
   <div class="root">
    <div  class="post" v-for="post in list" :key="post.id">
      <router-link class="content" :to="$store.postURL(post)">
-      <img class='cover' :class="coverPosition(post)"  v-if="post.cover" :src="post.cover"  :title="'查看文章：' + post.title"/>
+      <img v-if="post.cover_position !== 4 && post.cover" class='cover' :class="coverPosition(post)"  :src="post.cover"  :title="'查看文章：' + post.title"/>
+
       <div class="postcontent">
-        <PostHeader :post="post" :summary="true"/>
-        <div class='content' >
-        <!-- <div class='desc' v-if="post.summary">
+        <PostHeader class="posttxt" :post="post" :summary="true"/>
+        <img v-if="post.cover_position == 4 && post.cover" class='cover' :class="coverPosition(post)" :src="post.cover"  :title="'查看文章：' + post.title"/>
+
+        <div class='desc posttxt' v-if="post.summary">
             <p style="text-indent: 2em;margin:0;padding:0;">{{ post.summary +'...' }}</p>
-        </div> -->
         </div>
       </div>
      </router-link>
@@ -62,6 +63,8 @@ export default {
         return "cover_right";
       } else if (3 == post.cover_position) {
         return "cover_bottom";
+      } else if (4 == post.cover_position) {
+        return "conver_center";
       } else {
         return "cover_top";
       }
@@ -79,8 +82,7 @@ export default {
           this.list = res.list;
           this.total = res.total;
           this.page = res.page;
-        } else {
-        }
+        } 
       });
     },
     onPageChanged(page) {
@@ -129,8 +131,12 @@ export default {
   /* justify-content: space-between; */
 }
 .postcontent {
-  padding: 20px 50px;
+  padding: 20px 0px;
   flex: 1;
+}
+.posttxt {
+  margin-left: 50px;
+  margin-right: 50px;
 }
 .cover {
   display: block;
@@ -156,13 +162,13 @@ export default {
   display: block;
   align-self: center;
   height: 100%;
-	width: 300px;
+  width: 400px;
 }
 .cover_right {
   display: block;
   align-self: center;
-  width: 300px;
-  max-width: 300px;
+  width: 380px;
+  /* max-width: 300px; */
   height: 100%;
   order: 2;
 }
@@ -174,6 +180,14 @@ export default {
   max-height: 400px;
   align-self: center;
   order: 2;
+}
+.conver_center {
+  width: 100%;
+  min-width: 100%;
+  display: block;
+  height: auto;
+  max-height: 400px;
+  align-self: center;
 }
 
 .right {
@@ -195,6 +209,13 @@ export default {
   display: -webkit-box;
   -webkit-line-clamp: 5;
   -webkit-box-orient: vertical;
+  color: #15171a;
+  font-size: 17px;
+  line-height: 24px;
+  margin-top: 10px;
+  line-break: auto;
+  word-wrap:break-word;
+    word-break:break-all;
 }
 .tool {
   height: 32px;

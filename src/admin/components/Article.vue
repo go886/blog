@@ -55,6 +55,14 @@
             </a>
           </template>
         </el-table-column>
+         <el-table-column
+          prop="comment"
+          label="允许评论"
+          width="80">
+          <template slot-scope="scope" > 
+            <i v-if="scope.row.comment == true" class="el-icon-check"></i>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="pv"
           label="Pv"

@@ -1,4 +1,4 @@
-const mgr = require('../../model/index').setting
+const mgr = require('../../model/index').user
 const md5 = require('md5')
 module.exports = {
     async update(ctx) {
