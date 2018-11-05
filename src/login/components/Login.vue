@@ -29,13 +29,12 @@
 </template>
 
 <script>
-const md5 = require("md5");
-
+import sha256 from "sha256";
 export default {
   data() {
     return {
       form: {
-        remember:true,
+        remember: true
       },
       rules: {
         name: [{ required: true, message: "请输入用户名", trigger: "blur" }],
@@ -48,11 +47,15 @@ export default {
       this.$refs["form"].validate(valid => {
         if (!valid) return;
 
+        const encrypt = (name, pwd) => {
+          return sha256(sha256(pwd) + name.length + sha256(name));
+        };
+
         this.$http("/api/mgr/user/login", {
           params: {
             name: this.form.name,
-            pwd: md5(this.form.pwd),
-            remember: this.form.remember ? 1 : 0,
+            pwd: encrypt(this.form.name, this.form.pwd),
+            remember: this.form.remember ? 1 : 0
           }
         }).then(res => {
           if (!res.error) {

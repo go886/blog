@@ -27,6 +27,8 @@
 </template>
 
 <script>
+import sha256 from "sha256";
+
 export default {
   data() {
     return {
@@ -54,6 +56,15 @@ export default {
         }
       });
     },
+    encode(user) {
+      const encrypt = (name, pwd) => {
+        return sha256(sha256(pwd) + name.length + sha256(name));
+      };
+
+      if (user.pwd) user.pwd = encrypt(user.name, user.pwd);
+      if (user.newpwd) user.newpwd = encrypt(user.name, user.newpwd);
+      if (user.newpwd2) user.newpwd2 = encrypt(user.name, user.newpwd2);
+    },
     onSubmit() {
       this.$refs["form"].validate(valid => {
         if (valid) {
@@ -64,8 +75,10 @@ export default {
             background: "rgba(0, 0, 0, 0.7)"
           });
 
+          let user = this.encode(JSON.parse(JSON.stringify(this.user)));
+
           this.$http("/api/mgr/user/update", {
-            params: this.user
+            params: user
           }).then(res => {
             loading.close();
             if (!res.error) {
@@ -84,11 +97,11 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .root {
-    margin-top: 20px;
-    margin-left: 20px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    /* align-items: center; */
+  margin-top: 20px;
+  margin-left: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
 }
 </style>

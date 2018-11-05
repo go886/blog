@@ -1,5 +1,5 @@
 const mgr = require('../../model/index').user
-const md5 = require('md5')
+const sha256 = require("sha256")
 module.exports = {
     async update(ctx) {
         const query = ctx.q
@@ -7,9 +7,9 @@ module.exports = {
         let newUser = {
             nick: query.nick,
             logo: query.logo,
-            pwd: query.pwd ? md5(query.pwd) : null,
-            newPwd: query.newpwd ? md5(query.newpwd) : null,
-            newPwd2: query.newpwd2 ? md5(query.newpwd2) : null,
+            pwd: query.pwd ? sha256(query.pwd) : null,
+            newPwd: query.newpwd ? sha256(query.newpwd) : null,
+            newPwd2: query.newpwd2 ? sha256(query.newpwd2) : null,
         }
 
         if (newUser.newPwd) {
@@ -24,7 +24,7 @@ module.exports = {
                 return { error: '新老不能密码一致' }
             }
 
-            if (md5(newUser.pwd) !== user.pwd) {
+            if (sha256(newUser.pwd) !== user.pwd) {
                 return { error: '原始密码不正确' }
             }
 
@@ -51,7 +51,7 @@ module.exports = {
         if (!name || !pwd) {
             return { error: '用户名与密码不能为空' }
         }
-        let user = { name, pwd: md5(pwd) }
+        let user = { name, pwd: sha256(pwd) }
         let user2 = await mgr.get("user")
         if (!user2) { //第一次登录
             user.id = 'user'
@@ -84,8 +84,8 @@ module.exports = {
         const user = await mgr.get("user") || {}
         const token = {
             name: user.name,
-            pwd: md5(user.pwd + user.name),
+            pwd: sha256(user.name.length + user.pwd + user.name),
         }
-        return md5(JSON.stringify(token))
+        return sha256(JSON.stringify(token))
     }
 }
