@@ -1,6 +1,6 @@
 <template>
 <div>
-    <p class="markdown" v-html="md" />
+    <p id="write" class="markdown" v-html="md" />
 </div>
 </template>
 
@@ -158,7 +158,7 @@ export default {
 }
 .markdown >>> h1,
 .markdown >>> h2 {
-  border-bottom: 1px solid #efeaea;
+  /* border-bottom: 1px solid #efeaea; */
   padding-bottom: 10px;
 }
 .markdown >>> h3 {
@@ -211,7 +211,9 @@ export default {
 .markdown >>> code,
 .markdown >>> pre {
   font-family: Consolas, Monaco, Andale Mono, monospace;
-  background-color: #f7f7f7;
+  /* background-color: #f7f7f7; */
+      background-color: #f8f8f8;
+
   color: inherit;
 }
 
@@ -243,7 +245,9 @@ export default {
 }
 
 .markdown >>> code {
-  color: #666555;
+  /* color: #666555; */
+      color: #e96900;
+
 }
 
 .markdown >>> aside {
@@ -252,10 +256,15 @@ export default {
   width: 390px;
 }
 .markdown >>> blockquote {
-  border-left: 0.5em solid #eee;
+  /* border-left: 0.5em solid #eee;
   padding: 0 0 0 2em;
-  margin-left: 0;
+  margin-left: 0; */
+   border-left: 4px solid #42b983;
+    padding: 10px 0px 10px 15px;
+    color: #777;
+    background-color: rgba(66, 185, 131, .1);
 }
+
 .markdown >>> blockquote cite {
   font-size: 14px;
   line-height: 20px;
