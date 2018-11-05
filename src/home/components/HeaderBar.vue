@@ -28,11 +28,11 @@ export default {
           path: "/archives",
           icon: "archive"
         },
-        {
-          name: "作品",
-          path: "/production",
-          icon: "tags"
-        },
+        // {
+        //   name: "作品",
+        //   path: "/production",
+        //   icon: "tags"
+        // },
         {
           name: "关于",
           path: "/about",

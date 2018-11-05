@@ -24,7 +24,7 @@ module.exports = {
                 return { error: '新老不能密码一致' }
             }
 
-            if (sha256(newUser.pwd) !== user.pwd) {
+            if (newUser.pwd !== user.pwd) {
                 return { error: '原始密码不正确' }
             }
 

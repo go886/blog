@@ -51,7 +51,7 @@ export default {
           return sha256(sha256(pwd) + name.length + sha256(name));
         };
 
-        this.$http("/api/mgr/user/login", {
+        this.$http.post("/api/mgr/user/login", {
           params: {
             name: this.form.name,
             pwd: encrypt(this.form.name, this.form.pwd),

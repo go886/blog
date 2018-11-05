@@ -64,6 +64,7 @@ export default {
       if (user.pwd) user.pwd = encrypt(user.name, user.pwd);
       if (user.newpwd) user.newpwd = encrypt(user.name, user.newpwd);
       if (user.newpwd2) user.newpwd2 = encrypt(user.name, user.newpwd2);
+      return user;
     },
     onSubmit() {
       this.$refs["form"].validate(valid => {
@@ -77,7 +78,7 @@ export default {
 
           let user = this.encode(JSON.parse(JSON.stringify(this.user)));
 
-          this.$http("/api/mgr/user/update", {
+          this.$http.post("/api/mgr/user/update", {
             params: user
           }).then(res => {
             loading.close();

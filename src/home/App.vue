@@ -46,44 +46,12 @@ export default {
 
   created() {
     this.$http("/api/blog/query").then(res => {
-      function loadScript(url, callback) {
-        var head = document.getElementsByTagName("head")[0];
-        var script = document.createElement("script");
-        script.type = "text/javascript";
-        script.src = url;
-        if (typeof callback == "function") {
-          script.onload = script.onreadystatechange = function() {
-            if (
-              !this.readyState ||
-              this.readyState === "loaded" ||
-              this.readyState === "complete"
-            ) {
-              callback();
-              script.onload = script.onreadystatechange = null;
-            }
-          };
-        }
-        head.appendChild(script);
-      }
-
-      let plugins = {};
-      function loadPlugin(name, code) {
-        if (name && code && code.length > 0 && !plugins[name]) {
-          // console.log("loading plugin:", name);
-          try {
-            const fn = new Function("context", "return " + code);
-            fn.call(this, { loadScript });
-          } catch (error) {
-            // console.log('load plugin error:', error)
-          }
-        }
-      }
-
       if (res.setting) {
         document.title = res.setting.name;
         this.$store.state.config = res;
         if (res.setting.enabled_tracker && res.setting.plugin_tracker) {
-          loadPlugin("tracker", res.setting.plugin_tracker);
+          this.$store.register('tracker', res.setting.plugin_tracker)
+          this.$store.loadPlugin('tracker')
         }
       }
     });

@@ -1,7 +1,7 @@
 const level = require('level')
 const Hashids = require('hashids');
 const hashids = new Hashids('xiami.com', 0, 'abcdefghijklmnopqrstuvwxyz');
-const db = level('./mydb', { valueEncoding: "json" })
+const db = level('./db', { valueEncoding: "json" })
 const INIT_INDEX = 1000000000000;
 const MAX_LIMIT = 1000;
 const SEP = '.'
